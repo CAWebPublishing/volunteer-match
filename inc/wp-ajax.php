@@ -34,7 +34,7 @@ function volunteer_match_return_opportunities() {
 	$radius     = isset( $_POST['volunteer_match_radius'] ) ? '&radius=' . sanitize_text_field( wp_unslash( $_POST['volunteer_match_radius'] ) ) : '';
 	$keyword    = isset( $_POST['volunteer_match_keyword'] ) && ! empty( $_POST['volunteer_match_keyword'] ) ? '&keywords=' . sanitize_text_field( wp_unslash( $_POST['volunteer_match_keyword'] ) ) : '';
 
-	$interests  = isset( $_POST['volunteer_match_interests'] ) ? sanitize_text_field( wp_unslash( $_POST['volunteer_match_interests'] ) ) : array();
+	$interests  = isset( $_POST['volunteer_match_interests'] ) ? $_POST['volunteer_match_interests'] : array();
 	$categories = array();
 
 	foreach ( $interests as $i => $interest ) {
