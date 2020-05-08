@@ -114,13 +114,15 @@ jQuery(document).ready(function(){
 			}
 		});
 
-		volunteer_match_search_button.click( search_for_opportunities );
+		volunteer_match_search_button.click( function(e){ search_for_opportunities(e, undefined); } );
 
 		function search_for_opportunities( e, page){
 			e.preventDefault();
 
 			if( undefined !== page ){
 				response_page.val($(page).attr('href').replace('#', ''));
+			}else{
+				response_page.val(1);
 			}
 
 			volunteer_match_form.validate();
