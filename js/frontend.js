@@ -121,6 +121,8 @@ jQuery(document).ready(function(){
 
 			if( undefined !== page ){
 				response_page.val($(page).attr('href').replace('#', ''));
+			}else{
+				response_page.val(1);
 			}
 
 			volunteer_match_form.validate();
