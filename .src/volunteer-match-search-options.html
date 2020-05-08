@@ -1,0 +1,50 @@
+<link rel="stylesheet" href="../css/frontend.css" type="text/css" media="all">
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="../js/frontend.js"></script>
+<script src="../js/bootstrap.js"></script>
+<div class="form-row">
+	<div class="col-6" role="radiogroup" aria-label="Opportunity Types">
+		<strong>Opportunity Type</strong>
+		<div class="form-check pl-0">
+			<label for="volunteer_match_type_local">
+				<input id="volunteer_match_type_local" type="radio" value="local" name="volunteer_match_type" checked> Local (you\'ll go to a physical location)
+			</label>
+		</div>
+		<div class="form-check pl-0">
+			<label for="volunteer_match_type_virtual">
+				<input id="volunteer_match_type_virtual" type="radio" value="virtual" name="volunteer_match_type"> Virtual (you can do it from a computer, your home or anywhere!)
+			</label>
+		</div>
+	</div>
+	<div class="col-4">
+		<div class="form-check pl-0">
+			<label for="volunteer_match_covid19">COVID-19 Related 
+				<input id="volunteer_match_covid19" type="checkbox" name="volunteer_match_covid19" checked>
+			</label>
+		</div>
+		<div class="dropdown" role="group" aria-label="Interested in menu">
+			<button 
+				class="btn btn-sm btn-primary dropdown-toggle" 
+				id="volunteer-match-interest-button" 
+				data-toggle="dropdown" 
+				aria-haspopup="true" 
+				aria-expanded="false">I am interested in...
+			</button>
+			<div class="dropdown-menu" aria-labelledby="volunteer-match-interest-button">
+				<div class="col">
+					<label for="interest-1">
+						<input id="interest-1" type="checkbox" name="volunteer_match_interests[]" value="1"> Topic 1
+					</label>
+				</div>
+				<div class="col">
+					<label for="interest-2">
+						<input id="interest-2" type="checkbox" name="volunteer_match_interests[]" value="2"> Topic 2
+					</label>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="col-2">
+		<button id="volunteer-match-search" class="float-right btn btn-primary">Search</button>
+	</div>
+</div>

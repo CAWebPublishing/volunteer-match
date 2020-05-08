@@ -1,0 +1,95 @@
+<link rel="stylesheet" href="../css/frontend.css" type="text/css" media="all">
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="../js/frontend.js"></script>
+<script src="../js/bootstrap.js"></script>
+<div id="volunteer-match" class="container">
+    <form class="needs-validation mb-3" novalidate="novalidate">
+        <!-- Search Row volunteer-match-search-row.html -->
+        <div class="form-row">
+            <div class="form-group col-6">
+                <label for="volunteer_match_location">
+                    Zip Code <span class="text-danger">*</span>
+                </label>
+                <input id="volunteer_match_location" type="text" name="volunteer_match_location" class="form-control" required>
+            </div>
+            <div class="form-group col-6">
+                <label for="volunteer_match_keyword">Narrow your search</label>
+                <input id="volunteer_match_keyword" type="text" name="volunteer_match_keyword" placeholder="Keyword" class="form-control">
+            </div>
+        </div>
+        <!-- End of Search Row volunteer-match-search-row.html -->
+        <!-- Search Options volunteer-match-search-options.html -->
+        <div class="form-row">
+            <div class="col-6" role="radiogroup" aria-label="Opportunity Types">
+                <strong>Opportunity Type</strong>
+                <div class="form-check pl-0">
+                    <label for="volunteer_match_type_local">
+                        <input id="volunteer_match_type_local" type="radio" value="local" name="volunteer_match_type" checked> Local (you\'ll go to a physical location)
+                    </label>
+                </div>
+                <div class="form-check pl-0">
+                    <label for="volunteer_match_type_virtual">
+                        <input id="volunteer_match_type_virtual" type="radio" value="virtual" name="volunteer_match_type"> Virtual (you can do it from a computer, your home or anywhere!)
+                    </label>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="form-check pl-0">
+                    <label for="volunteer_match_covid19">COVID-19 Related
+                        <input id="volunteer_match_covid19" type="checkbox" name="volunteer_match_covid19" checked>
+                    </label>
+                </div>
+                <!-- Search Interests volunteer-match-interests.html -->
+                <div class="dropdown" role="group" aria-label="Interested in menu">
+                    <button class="btn btn-sm btn-primary dropdown-toggle" id="volunteer-match-interest-button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">I am interested in...
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="volunteer-match-interest-button">
+                        <div class="col">
+                            <label for="interest-1">
+                                <input id="interest-1" type="checkbox" name="volunteer_match_interests[]" value="1"> Topic 1
+                            </label>
+                        </div>
+                        <div class="col">
+                            <label for="interest-2">
+                                <input id="interest-2" type="checkbox" name="volunteer_match_interests[]" value="2"> Topic 2
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-2">
+                <button id="volunteer-match-search" class="float-right btn btn-primary">Search</button>
+            </div>
+        </div>
+        <!-- End for Search Options volunteer-match-search-options.html -->
+    </form>
+    <!-- Search Opportunities volunteer-match-opps.html -->
+    <div id="volunteer-match-opps" class="hidden">
+        <div class="row no-gutters">
+            <h3 class="pb-0 mr-3">Opportunities</h3>
+            <div class="col text-right">
+                <span class="current-page-view">Viewing Page 1 of 22</span>
+                <div class="pagination d-inline-block">
+                    <nav>
+                        <ul class="d-flex pagination pagination-sm mb-0">
+                            <li class="page-item"><a class="page-link" href="#2" title="Page 2">2</a></li>
+                            <li class="page-item"><a class="page-link" href="#3" title="Page 3">3</a></li>
+                            <li class="page-item"><a class="page-link" href="#4" title="Page 4">4</a></li>
+                            <li class="page-item"><a class="page-link" href="#5" title="Page 5">5</a></li>
+                            <li class="page-item"><a class="page-link" href="#6" title="Page 6">6</a></li>
+                            <li class="page-item"><a class="page-link" href="#7" title="Page 7">7</a></li>
+                            <li class="page-item"><a class="page-link" href="#8" title="Page 8">8</a></li>
+                            <li class="page-item"><a class="page-link" href="#9" title="Page 9">9</a></li>
+                            <li class="page-item"><a class="page-link" href="#10" title="Page 10">10</a></li>
+                            <li class="page-item"><a class="page-link" href="#11" title="Page 11">11</a></li>
+                            <li class="page-item"><a class="page-link" href="#12" title="Last 10 Pages"><span aria-hidden="true">»</span><span class="sr-only">Last 10 Pages</span></a></li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+        <i class="volunteer-match-info-disclaimer">By checking Sign Up, your contact information will be shared with the host organization and you will receive an email.</i>
+        <ol id="volunteer-match-opp-list" class="border border-primary px-4 py-3 overflow-auto"></ol>
+    </div>
+    <!-- End for Search Opportunities volunteer-match-opps.html -->
+</div>

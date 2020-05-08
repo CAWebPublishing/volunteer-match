@@ -1,0 +1,25 @@
+<link rel="stylesheet" href="../css/frontend.css" type="text/css" media="all">
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="../js/frontend.js"></script>
+<script src="../js/bootstrap.js"></script>
+<div class="dropdown" role="group" aria-label="Interested in menu">
+	<button 
+		class="btn btn-sm btn-primary dropdown-toggle" 
+		id="volunteer-match-interest-button" 
+		data-toggle="dropdown" 
+		aria-haspopup="true" 
+		aria-expanded="false">I am interested in...
+	</button>
+	<div class="dropdown-menu" aria-labelledby="volunteer-match-interest-button">
+		<div class="col">
+			<label for="interest-1">
+				<input id="interest-1" type="checkbox" name="volunteer_match_interests[]" value="1"> Topic 1
+			</label>
+		</div>
+		<div class="col">
+			<label for="interest-2">
+				<input id="interest-2" type="checkbox" name="volunteer_match_interests[]" value="2"> Topic 2
+			</label>
+		</div>
+	</div>
+</div>
