@@ -287,21 +287,23 @@ jQuery(document).ready(function(){
 			// Structural Variables
 			var li = document.createElement('LI');
 			var div_row = document.createElement('DIV');
-			var col = document.createElement('DIV');
+			var col1 = document.createElement('DIV');
+			var col2 = document.createElement('DIV');
 
 			// Field Variables
 			var sign_up = document.createElement('BUTTON');
 			
-			// Attribute Variables
-			
+			$(li).addClass( `opp-match-item-${opp.id}`);
+
 			// Row
 			$(div_row).addClass('row mb-2');
 
 			// Columns
-			$(col).addClass('col-12');
+			$(col1).addClass('col-10');
+			$(col2).addClass('col-2');
 
 			// Sign Up Button
-			$(sign_up).addClass('float-right btn btn-primary');
+			$(sign_up).addClass('float-right btn btn-primary opp-match-sign-up');
 			if( button_size.length ){
 				$(sign_up).addClass( button_size.val() );
 			}else{
@@ -309,8 +311,6 @@ jQuery(document).ready(function(){
 			}
 			$(sign_up).html('Sign Up');
 			$(sign_up).attr('id', `sign-up-${opp.id}` );
-			//$(sign_up).css( 'top', '0');
-			//$(sign_up).css('right', '0');
 			if( button_color.length ){
 				$(sign_up).css('background-color', button_color.val() );
 			}
@@ -318,7 +318,7 @@ jQuery(document).ready(function(){
 				$(sign_up).css('color', button_font_color.val() );
 			}
 			sign_up.addEventListener('click', function(){ sign_up_for_opp( $(this), opp) } );
-			$(col).append(sign_up);
+			$(col2).append(sign_up);
 
 			// Append
 			if( ! show_parent_org.length && undefined !== opp.parentOrg){
@@ -326,48 +326,78 @@ jQuery(document).ready(function(){
 				var parentOrg = document.createElement('STRONG');
 
 				$(parentOrg).html(`Organization: ${opp.parentOrg.name}`);
-				$(parentOrg).addClass('d-block');
+				$(parentOrg).addClass('d-block opp-match-parent-org-name');
 
-				$(col).append(parentOrg);
+				$(col1).append(parentOrg);
 			}
 
 			if( ! show_mission.length && undefined !== opp.parentOrg){
 				// Parent Mission
+				var parentOrgDiv = document.createElement('DIV');
 				var parentOrg = document.createElement('STRONG');
+				var parentMissionDiv = document.createElement('DIV');
 
-				$(parentOrg).html(`Mission: ${opp.parentOrg.mission}`);
-				$(parentOrg).addClass('d-block');
+				$(parentOrgDiv).addClass('opp-match-parent-org-mission');
 
-				$(col).append(parentOrg);
+				$(parentOrg).html(`Mission:`);
+
+				$(parentMissionDiv).html(`${opp.parentOrg.mission}`);
+
+				$(parentOrgDiv).append(parentOrg);
+				$(parentOrgDiv).append(parentMissionDiv);
+
+				$(col1).append(parentOrgDiv);
 			}
 			
 			if( ! show_title.length ){
 				// Title
+				var titleDiv = document.createElement('DIV');
 				var title = document.createElement('STRONG');
-				$(title).html(`Opportunity: ${opp.title}`);
-				$(title).addClass('d-block');
+				var titleSpan = document.createElement('SPAN');
 
-				$(col).append(title);
+				$(titleDiv).addClass('opp-match-title');
+
+				$(title).html(`Opportunity: `);
+				
+				$(titleSpan).html(`${opp.title}`);
+
+				$(titleDiv).append(title);
+				$(titleDiv).append(titleSpan);
+				$(col1).append(titleDiv);
 			}
 
 			if( ! show_dates.length && undefined !== opp.dateRange ){
+				var dateDiv = document.createElement('DIV');
 				// Dates
-				$(col).append( add_opp_dates( opp ) );
+				$(dateDiv).addClass('opp-match-dates');
+				$(dateDiv).append( add_opp_dates( opp ) );
+
+				$(col1).append( dateDiv );
 			}
 
 			if( volunteer_match_local_type.prop('checked') ){
 				// Location
 				if( ! show_location.length ){
-					$(col).append( add_opp_location( opp ) );
+					var locationDiv = document.createElement('DIV');
+					
+					$(locationDiv).addClass('opp-match-location');
+					$(locationDiv).append( add_opp_location( opp ) );
+
+					$(col1).append( locationDiv );
 				}
 			}
 
 			if( ! show_description.length ){
+				var descDiv = document.createElement('DIV');
 				// Description
-				$(col).append( add_opp_description( opp ) );
+				$(descDiv).addClass('opp-match-description');
+				$(descDiv).append( add_opp_description( opp ) );
+
+				$(col1).append( descDiv );
 			}
 
-			$(div_row).append(col);
+			$(div_row).append(col1);
+			$(div_row).append(col2);
 
 			$(li).append(div_row);
 
@@ -377,7 +407,7 @@ jQuery(document).ready(function(){
 
 		function add_opp_dates( opp ){
 			if( opp.dateRange.ongoing ){
-				return '<strong class="d-block">Dates: Ongoing</strong>';
+				return '<strong>Dates: </strong><span>Ongoing</span>';
 			}else{
 				var s = null !== opp.dateRange.startDate ? `${opp.dateRange.startDate}` : '';
 				var e = null !== opp.dateRange.endDate ? `${opp.dateRange.endDate}` : '';
@@ -396,7 +426,7 @@ jQuery(document).ready(function(){
 					s += ' -';
 				}
 
-				return `<strong class="d-block">Dates:${s}${e}</strong>`;
+				return `<strong>Dates:</strong><span>${s}${e}</span>`;
 
 			}
 		}
