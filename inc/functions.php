@@ -66,7 +66,7 @@ function volunteer_match_allowed_html( $exclude = array(), $form = false ) {
 		'p'      => $attr,
 		'br'     => array(),
 		'span'   => $attr,
-		'a'      => array_merge( $attr, $aria, $data ),
+		'a'      => array_merge( $attr, $anchors, $aria, $data ),
 		'button' => array_merge( $attr, $aria, $data ),
 		'img'    => array_merge( $attr, $imgs ),
 		'strong' => $attr,
@@ -106,12 +106,12 @@ function volunteer_match_allowed_html( $exclude = array(), $form = false ) {
 		);
 
 		$form_tags = array(
-			'form'     => array_merge( $attr, $form_attrs ),
-			'label'    => array_merge( $attr, $input_attrs ),
-			'input'    => array_merge( $attr, $input_attrs ),
-			'li'       => array_merge( $attr, $input_attrs ),
-			'select'   => array_merge( $attr, $input_attrs ),
-			'option'   => array_merge( $attr, $input_attrs ),
+			'form'     => array_merge( $attr, $input_attrs, $aria, $data ),
+			'label'    => array_merge( $attr, $input_attrs, $aria, $data ),
+			'input'    => array_merge( $attr, $input_attrs, $aria, $data ),
+			'li'       => array_merge( $attr, $input_attrs, $aria, $data ),
+			'select'   => array_merge( $attr, $input_attrs, $aria, $data ),
+			'option'   => array_merge( $attr, $input_attrs, $aria, $data ),
 		);
 
 		$tags = array_merge( $tags, $form_tags );
