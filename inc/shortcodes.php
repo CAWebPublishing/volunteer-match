@@ -240,7 +240,7 @@ function volunteer_match_search_results( $attr ) {
 			</div>
 		</div>
 		<i class="volunteer-match-info-disclaimer">%1$s</i>
-		<ol id="volunteer-match-opp-list" class="px-4 py-3 overflow-auto%2$s"></ol>
+		<ol id="volunteer-match-opp-list" class="p-3 pl-5 overflow-auto%2$s"></ol>
 		</div>',
 		$d,
 		$border_color
