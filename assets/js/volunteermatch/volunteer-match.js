@@ -301,7 +301,7 @@ jQuery(document).ready(function(){
 			$(col).addClass('col-12');
 
 			// Sign Up Button
-			$(sign_up).addClass('position-absolute btn btn-primary');
+			$(sign_up).addClass('float-right btn btn-primary');
 			if( button_size.length ){
 				$(sign_up).addClass( button_size.val() );
 			}else{
@@ -309,8 +309,8 @@ jQuery(document).ready(function(){
 			}
 			$(sign_up).html('Sign Up');
 			$(sign_up).attr('id', `sign-up-${opp.id}` );
-			$(sign_up).css( 'top', '0');
-			$(sign_up).css('right', '0');
+			//$(sign_up).css( 'top', '0');
+			//$(sign_up).css('right', '0');
 			if( button_color.length ){
 				$(sign_up).css('background-color', button_color.val() );
 			}
@@ -318,6 +318,7 @@ jQuery(document).ready(function(){
 				$(sign_up).css('color', button_font_color.val() );
 			}
 			sign_up.addEventListener('click', function(){ sign_up_for_opp( $(this), opp) } );
+			$(col).append(sign_up);
 
 			// Append
 			if( ! show_parent_org.length && undefined !== opp.parentOrg){
@@ -366,7 +367,6 @@ jQuery(document).ready(function(){
 				$(col).append( add_opp_description( opp ) );
 			}
 
-			$(col).append(sign_up);
 			$(div_row).append(col);
 
 			$(li).append(div_row);
