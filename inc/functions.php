@@ -26,8 +26,8 @@ function volunteer_match_get_min_file( $f, $ext = 'css' ) {
  * Allowed HTML for wp_kses
  *
  * @link https://codex.wordpress.org/Function_Reference/wp_kses
- * @param  mixed $exclude HTML tags to exclude.
- * @param  mixed $form Whether or not to include form fields.
+ * @param  array $exclude HTML tags to exclude.
+ * @param  array $form Whether or not to include form fields.
  * @return array
  */
 function volunteer_match_allowed_html( $exclude = array(), $form = false ) {
