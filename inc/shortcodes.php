@@ -233,7 +233,7 @@ function volunteer_match_search_results( $attr ) {
 	return sprintf(
 		'<div id="volunteer-match-opps" class="hidden">
 		<div class="row no-gutters">
-			<h3 class="pb-0 mr-3">Opportunities</h3>
+			<h3 class="font-weight-bold pb-0 mr-3">Opportunities</h3>
 			<div class="col text-right">
 				<span class="current-page-view"></span>
 				<div class="pagination d-inline-block"></div>
