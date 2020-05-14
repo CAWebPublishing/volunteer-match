@@ -14,8 +14,14 @@ if ( isset( $_POST['volunteer_match_submit'] ) ) {
 
 // Volunteer Match Options.
 $volunteer_match_api_key                    = get_option( 'volunteer_match_api_key', '' );
+
 $volunteer_match_opp_endpoint               = get_option( 'volunteer_match_opp_endpoint', '' );
+$volunteer_match_opp_endpoint_environment = get_option('volunteer_match_opp_endpoint_environment', 'staging');
+$volunteer_match_opp_endpoint_graphql = get_option('volunteer_match_opp_endpoint_graphql', false) ? ' checked' : '';
+
 $volunteer_match_create_connection_endpoint = get_option( 'volunteer_match_create_connection_endpoint', '' );
+$volunteer_match_create_connection_endpoint_environment = get_option('volunteer_match_create_connection_endpoint_environment', 'staging');
+$volunteer_match_create_connection_endpoint_graphql = get_option('volunteer_match_create_connection_endpoint_graphql', false) ? ' checked' : '';
 
 $volunteer_match_categories = volunteer_match_categories();
 $volunteer_match_interests  = get_option( 'volunteer_match_interests', array() );
@@ -30,23 +36,9 @@ $volunteer_match_interests  = get_option( 'volunteer_match_interests', array() )
 				<li class="list-group-item"><a href="#volunteer-match-interests" data-toggle="collapse" aria-expanded="false" aria-controls="volunteer-match-interests" class="text-decoration-none">Interests</a></li>
 			</ul>
 		</div>
-		<div id="volunteer-match-settings" class="row mr-3 bg-white collapse show" data-parent="#volunteer-match-options-form">
-			<div class="form-group col-lg-7">
-				<label for="volunteer_match_api_key">Volunteer Match API Key</label>
-				<input type="text" class="form-control" id="volunteer_match_api_key" name="volunteer_match_api_key" value="<?php print esc_attr( $volunteer_match_api_key ); ?>">
-				<small class="form-text text-muted">For more information on How to Get an API Key, visit <a href="https://github.com/volunteermatch/vm-contrib/tree/master/graphql#getting-an-api-key" target="_blank">here</a></small>
-			</div>
-			<div class="form-group col-lg-7">
-				<label for="volunteer_match_opp_endpoint">Volunteer Match Opportunities Endpoint</label>
-				<input type="text" class="form-control" id="volunteer_match_opp_endpoint" name="volunteer_match_opp_endpoint" value="<?php print esc_url( $volunteer_match_opp_endpoint ); ?>">
-				<small class="form-text text-muted">For more information on Making Calls, visit <a href="https://github.com/volunteermatch/vm-contrib/tree/master/graphql#making-calls" target="_blank">here</a></small>
-			</div>
-			<div class="form-group col-lg-7">
-				<label for="volunteer_match_create_connection_endpoint">Volunteer Match Create Connection Endpoint</label>
-				<input type="text" class="form-control" id="volunteer_match_create_connection_endpoint" name="volunteer_match_create_connection_endpoint" value="<?php print esc_url( $volunteer_match_create_connection_endpoint ); ?>">
-				<small class="form-text text-muted">For more information on How to Get an API Key, visit <a href="https://github.com/volunteermatch/vm-contrib/tree/master/graphql#making-calls" target="_blank">here</a></small>
-			</div>
-		</div>
+		<?php
+			include_once 'sections/vm.php';
+		?>
 		<div id="volunteer-match-interests" class="row mr-3 bg-white collapse" data-parent="#volunteer-match-options-form">
 			<div class="form-group col-lg-12">
 				<button id="volunteer-match-add-interest" class="btn btn-sm btn-primary my-2">Add Interest</button>

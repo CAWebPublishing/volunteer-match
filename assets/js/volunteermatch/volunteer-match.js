@@ -152,7 +152,7 @@ jQuery(document).ready(function(){
 						if( "string" === typeof response && response.trim() ){
 							var volunteer_match_search_response = JSON.parse( response );
 						
-							if( volunteer_match_search_response.numberOfResults ){
+							if( volunteer_match_search_response.numberOfResults || volunteer_match_search_response.resultsSize ){
 								add_pagination(volunteer_match_search_response );
 			
 								volunteer_match_opps_list.empty();

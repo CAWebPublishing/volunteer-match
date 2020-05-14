@@ -50,7 +50,16 @@ function volunteer_match_option_page() {
 function volunteer_match_save_options( $values = array() ) {
 	update_option( 'volunteer_match_api_key', $values['volunteer_match_api_key'] );
 	update_option( 'volunteer_match_opp_endpoint', esc_url_raw( $values['volunteer_match_opp_endpoint'] ) );
+	
+	$volunteer_match_opp_endpoint_graphql = isset( $values['volunteer_match_opp_endpoint_graphql'] ) ? true : false;
+	update_option('volunteer_match_opp_endpoint_graphql', $volunteer_match_opp_endpoint_graphql);
+	update_option('volunteer_match_opp_endpoint_environment', $values['volunteer_match_opp_endpoint_environment']);
+
 	update_option( 'volunteer_match_create_connection_endpoint', esc_url_raw( $values['volunteer_match_create_connection_endpoint'] ) );
+	
+	$volunteer_match_create_connection_endpoint_graphql = isset( $values['volunteer_match_create_connection_endpoint_graphql'] ) ? true : false;
+	update_option('volunteer_match_create_connection_endpoint_graphql', $volunteer_match_create_connection_endpoint_graphql);
+	update_option('volunteer_match_create_connection_endpoint_environment', $values['volunteer_match_create_connection_endpoint_environment']);
 
 	$interests = array();
 	if ( isset( $values['volunteer_match_interests'] ) ) {
