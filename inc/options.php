@@ -74,6 +74,10 @@ function volunteer_match_save_options( $values = array() ) {
 		}
 	}
 	update_option( 'volunteer_match_interests', $interests );
+	update_option( 'volunteer_match_radius', explode( ',', $values['volunteer_match_radius']) );
+
+	$volunteer_match_bootstrap_support = isset( $values['volunteer_match_bootstrap_support'] ) ? true : false;
+	update_option('volunteer_match_bootstrap_support', $volunteer_match_bootstrap_support);
 
 	print '<div class="updated notice is-dismissible"><p><strong>Volunteer Match Settings</strong> have been updated.</p><button type="button" class="notice-dismiss"><span class="screen-reader-text">Dismiss this notice.</span></button></div>';
 }
