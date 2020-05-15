@@ -130,6 +130,7 @@ function volunteer_match_create_connection() {
 	}
 
 	$volunteer_match_create_connection_endpoint = get_option( 'volunteer_match_create_connection_endpoint', '' );
+
 	$volunteer_match_create_connection_endpoint_environment = get_option('volunteer_match_create_connection_endpoint_environment', 'staging');
 	$volunteer_match_create_connection_endpoint_graphql = get_option('volunteer_match_create_connection_endpoint_graphql', false) ? ' checked' : '';
 	
@@ -158,9 +159,9 @@ function volunteer_match_create_connection() {
 			'lastName' => $lastName,
 			'email' => $email,
 			'phoneNumber' => $phoneNumber,
-			'zip' => $zip ,
+			'zipCode' => $zip ,
 			'oppId' => $oppId,
-			'acceptTermsAndConditions' => $acceptTermsAndConditions,
+			'acceptTermsAndConditions' => 'true',
 		);
 	}
 	
