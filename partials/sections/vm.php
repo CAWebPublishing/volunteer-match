@@ -1,14 +1,14 @@
 <div id="volunteer-match-settings" class="row mr-3 bg-white collapse show" data-parent="#volunteer-match-options-form">
 			<!-- VM API Key -->
 			<div class="form-group col-lg-7">
-				<strong><label for="volunteer_match_api_key" class="mb-0">Volunteer Match API Key</label></strong>
+				<strong><label for="volunteer_match_api_key" class="mb-0">VolunteerMatch API Key</label></strong>
 				<small class="form-text text-muted mt-0">For more information on How to Get an API Key, visit <a href="https://github.com/volunteermatch/vm-contrib/tree/master/graphql#getting-an-api-key" target="_blank">here</a>.</small>
 				<input type="text" class="form-control" id="volunteer_match_api_key" name="volunteer_match_api_key" value="<?php print esc_attr( $volunteer_match_api_key ); ?>">
 			</div>
 			<!-- VM Opportunities EndPoint -->
 			<div class="form-group col-lg-7">
-				<strong><label for="volunteer_match_opp_endpoint" class="mb-0">Volunteer Match Opportunities Endpoint</label></strong>
-				<small class="form-text text-muted mt-0">If endpoint is not set, the Volunteer Match EndPoints will be used. For more information on Making Calls visit <a href="https://github.com/volunteermatch/vm-contrib/tree/master/graphql#making-calls" target="_blank">here</a>.</small>
+				<strong><label for="volunteer_match_opp_endpoint" class="mb-0">VolunteerMatch Opportunities Endpoint</label></strong>
+				<small class="form-text text-muted mt-0">If endpoint is not set, the VolunteerMatch EndPoints will be used. For more information on Making Calls visit <a href="https://github.com/volunteermatch/vm-contrib/tree/master/graphql#making-calls" target="_blank">here</a>.</small>
 				<input type="text" class="form-control" id="volunteer_match_opp_endpoint" name="volunteer_match_opp_endpoint" value="<?php print esc_url( $volunteer_match_opp_endpoint ); ?>">
 			</div>
 			<!-- VM Opportunites EndPoint Using GraphQL -->
@@ -22,8 +22,8 @@
 				<small class="form-text text-muted">Whether or not the endpoint is using GraphQL.</small>
 			</div>
 			<!-- VM Opportunites EndPoint Environment -->
-			<div id="vm-opp-environment" class="form-group col-lg-7 mb-0<?php print ! empty($volunteer_match_opp_endpoint) ? ' hidden' : '';?>" role="radiogroup" aria-label="Volunteer Match Environment">
-				<strong class="d-block">Volunteer Match Opportunities EndPoint Environment</strong>
+			<div id="vm-opp-environment" class="form-group col-lg-7 mb-0<?php print ! empty($volunteer_match_opp_endpoint) ? ' hidden' : '';?>" role="radiogroup" aria-label="VolunteerMatch Environment">
+				<strong class="d-block">VolunteerMatch Opportunities EndPoint Environment</strong>
 				<small class="form-text text-muted mt-0">All testing should be done in the staging environment. For more information on Making Calls visit <a href="https://github.com/volunteermatch/vm-contrib/tree/master/graphql#making-calls" target="_blank">here</a>.</small>
 				<div class="form-check form-check-inline pl-0">
 					<label for="volunteer_match_opp_endpoint_environment_staging">
@@ -38,8 +38,8 @@
 			</div>
 			<!-- VM createConnection EndPoint -->
 			<div class="form-group col-lg-7">
-				<strong class="d-block"><label for="volunteer_match_create_connection_endpoint" class="mb-0">Volunteer Match Create Connection Endpoint</label></strong>
-				<small class="form-text text-muted mt-0">If endpoint is not set, the Volunteer Match EndPoints will be used. For more information on Making Calls visit <a href="https://github.com/volunteermatch/vm-contrib/tree/master/graphql#making-calls" target="_blank">here</a>.</small>
+				<strong class="d-block"><label for="volunteer_match_create_connection_endpoint" class="mb-0">VolunteerMatch Create Connection Endpoint</label></strong>
+				<small class="form-text text-muted mt-0">If endpoint is not set, the VolunteerMatch EndPoints will be used. For more information on Making Calls visit <a href="https://github.com/volunteermatch/vm-contrib/tree/master/graphql#making-calls" target="_blank">here</a>.</small>
 				<input type="text" class="form-control" id="volunteer_match_create_connection_endpoint" name="volunteer_match_create_connection_endpoint" value="<?php print esc_url( $volunteer_match_create_connection_endpoint ); ?>">
 			</div>
 			<!-- VM CreateConnection EndPoint Using GraphQL -->
@@ -53,8 +53,8 @@
 				<small class="form-text text-muted">Whether or not the endpoint is using GraphQL.</small>
 			</div>
 			<!-- VM CreateConnection EndPoint Environment -->
-			<div id="vm-create-connection-environment" class="form-group col-lg-7<?php print ! empty($volunteer_match_create_connection_endpoint) ? ' hidden' : '';?>" role="radiogroup" aria-label="Volunteer Match Environment">
-				<strong class="d-block">Volunteer Match Opportunities EndPoint Environment</strong>
+			<div id="vm-create-connection-environment" class="form-group col-lg-7<?php print ! empty($volunteer_match_create_connection_endpoint) ? ' hidden' : '';?>" role="radiogroup" aria-label="VolunteerMatch Environment">
+				<strong class="d-block">VolunteerMatch Create Connection EndPoint Environment</strong>
 				<small class="form-text text-muted mt-0">All testing should be done in the staging environment. For more information on Making Calls visit <a href="https://github.com/volunteermatch/vm-contrib/tree/master/graphql#making-calls" target="_blank">here</a>.</small>
 				<div class="form-check form-check-inline pl-0">
 					<label for="volunteer_match_create_connection_endpoint_environment_staging">

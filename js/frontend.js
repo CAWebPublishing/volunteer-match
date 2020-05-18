@@ -534,15 +534,22 @@ jQuery(document).ready(function(){
 								}
 							 })
 						}else{
-							var error_msg = undefined !== conn.response ? ` Error Message: ${conn.response}` : '';
-							alert(`An error occurred while signing up for ${opp.title}, please try again later.${error_msg}`);
-							current_button.html('Failed');
-							current_button.removeClass('btn-primary');
-							current_button.addClass('btn-secondary');
+							var error_msg = undefined !== conn.response ? conn.response : '';
+							
+							current_button.html(conn.button_msg);
 
-							if( button_failed_color.length ){
-								current_button.css('background-color', button_failed_color.val() );
-							}
+							if( 400 === conn.error_code ){
+								alert(error_msg);
+							}else{
+								alert(`An error occurred while signing up for ${opp.title}, please try again later. Error Message: ${error_msg}`);
+								
+								current_button.removeClass('btn-primary');
+								current_button.addClass('btn-secondary');
+	
+								if( button_failed_color.length ){
+									current_button.css('background-color', button_failed_color.val() );
+								}
+								}
 							
 						}
 					}

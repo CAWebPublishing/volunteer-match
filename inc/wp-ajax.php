@@ -180,11 +180,23 @@ function volunteer_match_create_connection() {
 		}
 	}
 
-	if ( 200 === wp_remote_retrieve_response_code( $response ) ) {
-		wp_send_json( wp_remote_retrieve_body( $response ) );
+	$code = wp_remote_retrieve_response_code( $response );
+	$body = wp_remote_retrieve_body( $response );
+	
+	if ( 200 === $code ) {
+		wp_send_json( $body );
 	} else {
 		$res['error']    = true;
-		$res['response'] = wp_remote_retrieve_body( $response );
+		$res['error_code'] = $code;
+
+        if (400 === $code) {
+			$res['response'] = "You've already connected with this opportunity.";
+			$res['button_msg'] = 'Connection Exists.';
+		}else{
+			$res['response'] = $body;
+			$res['button_msg'] = "Failed";
+		}
+
 		wp_send_json( $res );
 	}
 
