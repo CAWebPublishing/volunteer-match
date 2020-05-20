@@ -191,10 +191,8 @@ function volunteer_match_create_connection() {
 
         if (400 === $code) {
 			$res['response'] = "You've already connected with this opportunity.";
-			$res['button_msg'] = 'Connection Exists.';
 		}else{
 			$res['response'] = $body;
-			$res['button_msg'] = "Failed";
 		}
 
 		wp_send_json( $res );

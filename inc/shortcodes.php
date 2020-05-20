@@ -18,6 +18,7 @@ add_shortcode( 'volunteer_match', 'volunteer_match_func' );
  *               $attr['wpforms'] WPForms ID for the form connected to the dashboard, if $attr['id'] is set then $attr['id'] is used instead.
  *               $attr['notify'] Notify when form is submitted, default if false.
  *               $attr['disclaimer'] Disclaimer text displayed above opportunities list, default is 'By checking Sign Up, your contact information will be shared with the host organization and you will receive an email.'
+ *               $attr['disclaimer_font_size'] Disclaimer text font size in pixels.
  *               $attr['interests'] Whether the interests should be compacted or full, default is compact.
  *               $attr['interests'] = compact, shows a button with a menu of interests.
  *               $attr['interests'] = full, shows all interest on front display.
@@ -28,9 +29,15 @@ add_shortcode( 'volunteer_match', 'volunteer_match_func' );
  *               $attr['button_failed_color'] Button background color when signup failed.
  *               $attr['button_font_color'] Button text color.
  *               $attr['button_size'] Button size, default md. Options sm, md, lg.
+ *               $attr['button_text'] Sign Up button text, default 'Sign Up'.
+ *               $attr['button_failed_text'] Sign Up button text when connection fails, default 'Failed'.
+ *               $attr['button_connection_text'] Sign Up button text when connection succeeds, default 'Connected'.
+ *               $attr['button_connection_exist_text'] Sign Up button text when connection alreadt exists, default 'Connection Exists'.
  *               $attr['link_color'] Link text color.
  *               $attr['location'] Whether or not to show opportunity location, default is true.
  *               $attr['description'] Whether or not to show opportunity descriptions, default is true.
+ *               $attr['description_expanded_icon'] WordPress Dashicon when description is expanded, default 'arrow-down-alt2'.
+ *               $attr['description_collapsed_icon'] WordPress Dashicon when description is collapsed, default 'arrow-up-alt2'.
  *               $attr['date'] Whether or not to show opportunity date, default is true.
  *               $attr['title'] Whether or not to show opportunity title, default is true.
  *               $attr['mission'] Whether or not to show opportunity parent organization mission, default is true.
@@ -77,9 +84,15 @@ function volunteer_match_func( $attr ) {
  *               $attr['button_failed_color'] Button background color when signup failed.
  *               $attr['button_font_color'] Button text color.
  *               $attr['button_size'] Button size, default md. Options sm, md, lg.
+ *               $attr['button_text'] Sign Up button text, default 'Sign Up'.
+ *               $attr['button_failed_text'] Sign Up button text when connection fails, default 'Failed'.
+ *               $attr['button_connection_text'] Sign Up button text when connection succeeds, default 'Connected'.
+ *               $attr['button_connection_exist_text'] Sign Up button text when connection alreadt exists, default 'Connection Exists'.
  *               $attr['link_color'] Link text color.
  *               $attr['location'] Whether or not to show opportunity location, default is true.
  *               $attr['description'] Whether or not to show opportunity descriptions, default is true.
+ *               $attr['description_expanded_icon'] WordPress Dashicon when description is expanded, default 'arrow-down-alt2'.
+ *               $attr['description_collapsed_icon'] WordPress Dashicon when description is collapsed, default 'arrow-up-alt2'.
  *               $attr['date'] Whether or not to show opportunity date, default is true.
  *               $attr['title'] Whether or not to show opportunity title, default is true.
  *               $attr['parent_org'] Whether or not to show opportunity parent organization, default is true.
@@ -99,7 +112,12 @@ function volunteer_match_extra_inputs( $attr ) {
 	$button_failed_color = isset( $attr['button_failed_color'] ) ? sprintf( '<input type="hidden" name="volunteer_match_button_failed_color" value="%1$s">', $attr['button_failed_color'] ) : '';
 	$button_size         = isset( $attr['button_size'] ) ? sprintf( '<input type="hidden" name="volunteer_match_button_size" value="%1$s">', $attr['button_size'] ) : '';
 	$button_font_color   = isset( $attr['button_font_color'] ) ? sprintf( '<input type="hidden" name="volunteer_match_button_font_color" value="%1$s">', $attr['button_font_color'] ) : '';
-	$link_color          = isset( $attr['link_color'] ) ? sprintf( '<input type="hidden" name="volunteer_match_link_color" value="%1$s">', $attr['link_color'] ) : '';
+
+	$button_text = sprintf( '<input type="hidden" name="volunteer_match_button_text" value="%1$s">', isset( $attr['button_text'] ) ? $attr['button_text'] : 'Sign Up' );
+	$button_failed_text = sprintf( '<input type="hidden" name="volunteer_match_button_failed_text" value="%1$s">', isset( $attr['button_failed_text'] ) ? $attr['button_failed_text'] : 'Failed' );
+	$button_connection_text = sprintf( '<input type="hidden" name="volunteer_match_button_connection_text" value="%1$s">', isset( $attr['button_connection_text'] ) ? $attr['button_connection_text'] : 'Connected' );
+	$button_connection_exist_text =  sprintf( '<input type="hidden" name="volunteer_match_button_connection_exist_text" value="%1$s">', isset( $attr['button_connection_exist_text'] ) ? $attr['button_connection_exist_text'] : 'Connection Exists' );
+    $link_color          = isset( $attr['link_color'] ) ? sprintf( '<input type="hidden" name="volunteer_match_link_color" value="%1$s">', $attr['link_color'] ) : '';
 
 	$notify = isset( $attr['notify'] ) && 'true' === $attr['notify'] ? sprintf( '<input type="hidden" name="volunteer_match_show_notify" value="true">', $attr['notify'] ) : '';
 
@@ -109,7 +127,9 @@ function volunteer_match_extra_inputs( $attr ) {
 	$title       = isset( $attr['title'] ) && 'false' === $attr['title'] ? sprintf( '<input type="hidden" name="volunteer_match_show_title" value="false">', $attr['title'] ) : '';
 	$location    = isset( $attr['location'] ) && 'false' === $attr['location'] ? sprintf( '<input type="hidden" name="volunteer_match_show_location" value="false">', $attr['location'] ) : '';
 	$description = isset( $attr['description'] ) && 'false' === $attr['description'] ? sprintf( '<input type="hidden" name="volunteer_match_show_description" value="false">', $attr['description'] ) : '';
-
+	$description_expanded_icon = sprintf( '<input type="hidden" name="volunteer_match_description_expanded_icon" value="%1$s">', isset( $attr['description_expanded_icon'] ) ? $attr['description_expanded_icon'] : 'arrow-up-alt2' );
+	$description_collapsed_icon = sprintf( '<input type="hidden" name="volunteer_match_description_collapsed_icon" value="%1$s">', isset( $attr['description_collapsed_icon'] ) ? $attr['description_collapsed_icon'] : 'arrow-down-alt2' );
+   
 	$response_page = '<input type="hidden" value="1" name="volunteer_match_response_page">';
 
 	return "$nonce" .
@@ -120,8 +140,14 @@ function volunteer_match_extra_inputs( $attr ) {
 			"$button_size" .
 			"$button_failed_color" .
 			"$button_font_color" .
+			"$button_text" .
+			"$button_failed_text" .
+			"$button_connection_text" .
+			"$button_connection_exist_text" .
 			"$link_color" .
 			"$description" .
+			"$description_expanded_icon" .
+			"$description_collapsed_icon" .
 			"$location" .
 			"$date" .
 			"$parent_org" .
@@ -222,11 +248,13 @@ function volunteer_match_search_options( $attr ) {
  *
  * @param  array $attr Attributes for the shortcode.
  *               $attr['disclaimer'] Disclaimer text displayed above opportunities list, default is 'By checking Sign Up, your contact information will be shared with the host organization and you will receive an email.'.
+ *               $attr['disclaimer_font_size'] Disclaimer text font size in pixels.
  *               $attr['border'] Border color for the Opportunity List.
  * @return string
  */
 function volunteer_match_search_results( $attr ) {
 	$disclaimer   = isset( $attr['disclaimer'] ) ? $attr['disclaimer'] : '';
+	$disclaimer_font_size   = isset( $attr['disclaimer_font_size'] ) ? sprintf(' style="font-size:%1$spx;"', $attr['disclaimer_font_size'] ) : '';
 	$border_color = isset( $attr['border'] ) ? ' border border-' . $attr['border'] : '';
 	$d            = ! empty( $disclaimer ) ? $disclaimer : 'By checking Sign Up, your contact information will be shared with the host organization and you will receive an email.';
 
@@ -234,14 +262,15 @@ function volunteer_match_search_results( $attr ) {
 		'<div id="volunteer-match-opps" class="hidden">
 		<div class="row no-gutters">
 			<h3 class="font-weight-bold pb-0 mr-3">Opportunities</h3>
+			<i class="volunteer-match-info-disclaimer"%1$s>%2$s</i>
 			<div class="col text-right">
 				<span class="current-page-view"></span>
 				<div class="pagination d-inline-block"></div>
 			</div>
 		</div>
-		<i class="volunteer-match-info-disclaimer">%1$s</i>
-		<ol id="volunteer-match-opp-list" class="p-3 pl-5 overflow-auto%2$s"></ol>
+		<ol id="volunteer-match-opp-list" class="p-3 pl-5 overflow-auto%3$s"></ol>
 		</div>',
+		$disclaimer_font_size,
 		$d,
 		$border_color
 	);
