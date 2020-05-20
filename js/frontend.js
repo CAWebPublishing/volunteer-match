@@ -14,10 +14,16 @@ jQuery(document).ready(function(){
 		var button_color = $('input[name="volunteer_match_button_color"]'); 
 		var button_failed_color = $('input[name="volunteer_match_button_failed_color"]'); 
 		var button_font_color = $('input[name="volunteer_match_button_font_color"]'); 
+		var button_failed_text = $('input[name="volunteer_match_button_failed_text"]'); 
+		var button_connection_text = $('input[name="volunteer_match_button_connection_text"]'); 
+		var button_connection_exist_text = $('input[name="volunteer_match_button_connection_exist_text"]'); 
+		var button_text = $('input[name="volunteer_match_button_text"]'); 
 		var show_parent_org = $('input[name="volunteer_match_show_parent_org"]');
 		var show_title = $('input[name="volunteer_match_show_title"]');
 		var show_location = $('input[name="volunteer_match_show_location"]');
 		var show_description = $('input[name="volunteer_match_show_description"]');
+		var description_expanded_icon = $('input[name="volunteer_match_description_expanded_icon"]');
+		var description_collapsed_icon = $('input[name="volunteer_match_description_collapsed_icon"]');
 		var show_mission = $('input[name="volunteer_match_show_mission"]');
 		var show_notify = $('input[name="volunteer_match_show_notify"]');
 		var show_dates = $('input[name="volunteer_match_show_date"]');
@@ -190,7 +196,7 @@ jQuery(document).ready(function(){
 
 			volunteer_match_opps_current_page_view.html('Viewing Page ' + res.currentPage + ' of ' + totalPages);
 
-			$(page_list).addClass('d-flex pagination pagination-sm mb-0');
+			$(page_list).addClass('d-flex pagination pagination-sm mb-0 p-0');
 
 			if( startPage > 2 ){
 				var prev_10_li = document.createElement('LI');
@@ -278,7 +284,9 @@ jQuery(document).ready(function(){
 			}
 			$(pagination_nav).append(page_list);
 
-			volunteer_match_opps_pagination.append(pagination_nav);
+			if( totalPages > 1 ){
+				volunteer_match_opps_pagination.append(pagination_nav);
+			}
 
 			return volunteer_match_opps_pagination;
 		}
@@ -309,7 +317,7 @@ jQuery(document).ready(function(){
 			}else{
 				$(sign_up).addClass( 'btn-md' );
 			}
-			$(sign_up).html('Sign Up');
+			$(sign_up).html( button_text.val() );
 			$(sign_up).attr('id', `sign-up-${opp.id}` );
 			if( button_color.length ){
 				$(sign_up).css('background-color', button_color.val() );
@@ -471,7 +479,7 @@ jQuery(document).ready(function(){
 			$(description_anchor).attr( 'aria-controls', `opp-description-${opp.id}`);
 			$(description_anchor).html( 'Description');
 			
-			$(description_icon).addClass('dashicons dashicons-arrow-down-alt2 dashicons-arrow-up-alt2 align-middle');
+			$(description_icon).addClass('dashicons align-middle ' + 'dashicons-' + description_expanded_icon.val() + ' dashicons-' + description_collapsed_icon.val() );
 			$(description_anchor).append( description_icon );
 
 			$(col).append(description_anchor);
@@ -480,7 +488,7 @@ jQuery(document).ready(function(){
 			// Events
 			description_anchor.addEventListener( 'click', function(e){
 				$(description).collapse('toggle');
-				$(description_icon).toggleClass('dashicons-arrow-up-alt2');
+				$(description_icon).toggleClass('dashicons-' + description_collapsed_icon.val() );
 			});
 			return col;
 		}
@@ -512,7 +520,7 @@ jQuery(document).ready(function(){
 					success: function( conn ){
 
 						if( undefined === conn.error ){
-							current_button.html('Connected');
+							current_button.html( button_connection_text.val() );
 
 							// update any opportunity inputs that may exist
 							update_opp_form_inputs( opp );
@@ -534,15 +542,23 @@ jQuery(document).ready(function(){
 								}
 							 })
 						}else{
-							var error_msg = undefined !== conn.response ? ` Error Message: ${conn.response}` : '';
-							alert(`An error occurred while signing up for ${opp.title}, please try again later.${error_msg}`);
-							current_button.html('Failed');
-							current_button.removeClass('btn-primary');
-							current_button.addClass('btn-secondary');
+							var error_msg = undefined !== conn.response ? conn.response : '';
+							
 
-							if( button_failed_color.length ){
-								current_button.css('background-color', button_failed_color.val() );
-							}
+							if( 400 === conn.error_code ){
+								alert(error_msg);
+								current_button.html(button_connection_exist_text.val());
+							}else{
+								alert(`An error occurred while signing up for ${opp.title}, please try again later. Error Message: ${error_msg}`);
+								
+								current_button.html(button_failed_text.val());
+								current_button.removeClass('btn-primary');
+								current_button.addClass('btn-secondary');
+	
+								if( button_failed_color.length ){
+									current_button.css('background-color', button_failed_color.val() );
+								}
+								}
 							
 						}
 					}
