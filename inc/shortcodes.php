@@ -262,12 +262,12 @@ function volunteer_match_search_results( $attr ) {
 		'<div id="volunteer-match-opps" class="hidden">
 		<div class="row no-gutters">
 			<h3 class="font-weight-bold pb-0 mr-3">Opportunities</h3>
+			<i class="volunteer-match-info-disclaimer"%1$s>%2$s</i>
 			<div class="col text-right">
 				<span class="current-page-view"></span>
 				<div class="pagination d-inline-block"></div>
 			</div>
 		</div>
-		<i class="volunteer-match-info-disclaimer"%1$s>%2$s</i>
 		<ol id="volunteer-match-opp-list" class="p-3 pl-5 overflow-auto%3$s"></ol>
 		</div>',
 		$disclaimer_font_size,
