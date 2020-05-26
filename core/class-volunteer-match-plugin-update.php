@@ -1,6 +1,6 @@
 <?php
 /**
- * Volunteer Match Plugin Updater
+ * VolunteerMatch Plugin Updater
  *
  * @see https://github.com/WordPress/WordPress/blob/master/wp-admin/update.php
  * @see https://github.com/WordPress/WordPress/blob/master/wp-admin/includes/class-theme-upgrader.php
@@ -11,7 +11,7 @@
 
 if ( ! class_exists( 'Volunteer_Match_Plugin_Update' ) ) {
 	/**
-	 * Volunteer Match Plugin Upgrader
+	 * VolunteerMatch Plugin Upgrader
 	 */
 	class Volunteer_Match_Plugin_Update {
 
@@ -174,7 +174,7 @@ if ( ! class_exists( 'Volunteer_Match_Plugin_Update' ) ) {
 		}
 
 		/**
-		 * Adds the Volunteer Match Plugin Update Notification to List of Available Updates.
+		 * Adds the VolunteerMatch Plugin Update Notification to List of Available Updates.
 		 *
 		 * @param  array $update_transient Transient containing plugin updates.
 		 *
@@ -200,7 +200,9 @@ if ( ! class_exists( 'Volunteer_Match_Plugin_Update' ) ) {
 
 		/**
 		 * Filters the response for the current WordPress.org Plugin Installation API request.
-		 *
+		 * 
+		 * @see https://developer.wordpress.org/reference/functions/plugins_api/
+		 * 
 		 * @param  false|object|array $result The result object or array. Default false.
 		 * @param  string             $action The type of information being requested from the Plugin Installation API.
 		 * @param  object             $args Plugin API arguments.
@@ -274,18 +276,20 @@ if ( ! class_exists( 'Volunteer_Match_Plugin_Update' ) ) {
 
 		/**
 		 * Plugin Details
-		 *
+		 * 
+		 * @see https://developer.wordpress.org/reference/functions/plugins_api/
 		 * @return array
 		 */
 		public function plugin_details() {
 			$view_details = array(
 				'slug'     => plugin_basename( plugin_dir_path( __DIR__ ) ),
 				'author'   => 'Jesus D. Guzman',
-				'name'     => sprintf( '<img src="https://d3bl5qcndhcx94.cloudfront.net/rel193-ab5e81c8/favicon-32x32.png" class="volunteer-match-plugin-update-logo"> Volunteer Match', WP_PLUGIN_URL, plugin_basename( plugin_dir_path( __DIR__ ) ) ),
+				'name'     => sprintf( '<img src="https://d3bl5qcndhcx94.cloudfront.net/rel193-ab5e81c8/favicon-32x32.png" class="volunteer-match-plugin-update-logo"> VolunteerMatch', WP_PLUGIN_URL, plugin_basename( plugin_dir_path( __DIR__ ) ) ),
 				'sections' => array(
 					'Description' => 'Adds a shortcode that display a VolunteerMatch.org search dashboard and opportunities results.',
 				),
 				'requires' => '5.0.0',
+				'tested' => '5.4.1',
 			);
 
 			return $view_details;

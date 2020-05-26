@@ -1,0 +1,29 @@
+VolunteerMatch v1.0.11
+May 26, 2020
+- Added new shortcode for description type, description can be displayed as HTML or in plaintext
+
+VolunteerMatch v1.0.10
+May 15, 2020
+- Fixed merge conflicts
+
+VolunteerMatch v1.0.9
+May 15, 2020
+- Updated Volunteer Match references to read VolunteerMatch
+- Updated response message when a user tries to make multiple connections to an oportunity
+
+VolunteerMatch v1.0.8
+May 15, 2020
+- Fixed issue with acceptTermsAndConditions request variable
+- Fixed issue with zipCode param being named zip
+
+VolunteerMatch v1.0.7
+May 11, 2020
+- Fixed padding with opportunity list cutting off list numbers
+
+VolunteerMatch v1.0.6
+May 8, 2020
+- Fixed issue with categories not being sent 
+
+VolunteerMatch v1.0.0 - v1.0.5
+May 8, 2020
+- Initial release allows users to utilize shortcode to display VM Search Dashboard

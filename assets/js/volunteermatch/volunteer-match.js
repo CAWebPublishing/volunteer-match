@@ -22,6 +22,7 @@ jQuery(document).ready(function(){
 		var show_title = $('input[name="volunteer_match_show_title"]');
 		var show_location = $('input[name="volunteer_match_show_location"]');
 		var show_description = $('input[name="volunteer_match_show_description"]');
+		var description_type = $('input[name="volunteer_match_description_type"]');
 		var description_expanded_icon = $('input[name="volunteer_match_description_expanded_icon"]');
 		var description_collapsed_icon = $('input[name="volunteer_match_description_collapsed_icon"]');
 		var show_mission = $('input[name="volunteer_match_show_mission"]');
@@ -469,7 +470,12 @@ jQuery(document).ready(function(){
 			// Description
 			$(description).attr( 'id', `#opp-description-${opp.id}` );
 			$(description).addClass('collapse');
-			$(description).html(opp.description);
+
+			if( 'plaintext' === description_type.val() ){
+				$(description).html(opp.plaintextDescription);
+			}else{
+				$(description).html(opp.description);
+			}
 			$(description).collapse({toggle:false});
 			
 			$(description_anchor).addClass( 'text-reset' );
