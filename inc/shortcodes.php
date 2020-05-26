@@ -36,6 +36,7 @@ add_shortcode( 'volunteer_match', 'volunteer_match_func' );
  *               $attr['link_color'] Link text color.
  *               $attr['location'] Whether or not to show opportunity location, default is true.
  *               $attr['description'] Whether or not to show opportunity descriptions, default is true.
+ *               $attr['description_type'] Whether or not to show opportunity descriptions in HTML or plaintext format, default is HTML.
  *               $attr['description_expanded_icon'] WordPress Dashicon when description is expanded, default 'arrow-down-alt2'.
  *               $attr['description_collapsed_icon'] WordPress Dashicon when description is collapsed, default 'arrow-up-alt2'.
  *               $attr['date'] Whether or not to show opportunity date, default is true.
@@ -91,6 +92,7 @@ function volunteer_match_func( $attr ) {
  *               $attr['link_color'] Link text color.
  *               $attr['location'] Whether or not to show opportunity location, default is true.
  *               $attr['description'] Whether or not to show opportunity descriptions, default is true.
+ *               $attr['description_type'] Whether or not to show opportunity descriptions in HTML or plaintext format, default is HTML.
  *               $attr['description_expanded_icon'] WordPress Dashicon when description is expanded, default 'arrow-down-alt2'.
  *               $attr['description_collapsed_icon'] WordPress Dashicon when description is collapsed, default 'arrow-up-alt2'.
  *               $attr['date'] Whether or not to show opportunity date, default is true.
@@ -121,12 +123,13 @@ function volunteer_match_extra_inputs( $attr ) {
 
 	$notify = isset( $attr['notify'] ) && 'true' === $attr['notify'] ? sprintf( '<input type="hidden" name="volunteer_match_show_notify" value="true">', $attr['notify'] ) : '';
 
-	$parent_org  = isset( $attr['parent_org'] ) && 'false' === $attr['parent_org'] ? sprintf( '<input type="hidden" name="volunteer_match_show_parent_org" value="false">', $attr['parent_org'] ) : '';
-	$mission     = isset( $attr['mission'] ) && 'false' === $attr['mission'] ? sprintf( '<input type="hidden" name="volunteer_match_show_mission" value="false">', $attr['mission'] ) : '';
-	$date        = isset( $attr['date'] ) && 'false' === $attr['date'] ? sprintf( '<input type="hidden" name="volunteer_match_show_date" value="false">', $attr['date'] ) : '';
-	$title       = isset( $attr['title'] ) && 'false' === $attr['title'] ? sprintf( '<input type="hidden" name="volunteer_match_show_title" value="false">', $attr['title'] ) : '';
-	$location    = isset( $attr['location'] ) && 'false' === $attr['location'] ? sprintf( '<input type="hidden" name="volunteer_match_show_location" value="false">', $attr['location'] ) : '';
-	$description = isset( $attr['description'] ) && 'false' === $attr['description'] ? sprintf( '<input type="hidden" name="volunteer_match_show_description" value="false">', $attr['description'] ) : '';
+	$parent_org  = isset( $attr['parent_org'] ) && 'false' === $attr['parent_org'] ? '<input type="hidden" name="volunteer_match_show_parent_org" value="false">' : '';
+	$mission     = isset( $attr['mission'] ) && 'false' === $attr['mission'] ? '<input type="hidden" name="volunteer_match_show_mission" value="false">' : '';
+	$date        = isset( $attr['date'] ) && 'false' === $attr['date'] ? '<input type="hidden" name="volunteer_match_show_date" value="false">' : '';
+	$title       = isset( $attr['title'] ) && 'false' === $attr['title'] ? '<input type="hidden" name="volunteer_match_show_title" value="false">' : '';
+	$location    = isset( $attr['location'] ) && 'false' === $attr['location'] ? '<input type="hidden" name="volunteer_match_show_location" value="false">' : '';
+	$description = isset( $attr['description'] ) && 'false' === $attr['description'] ? '<input type="hidden" name="volunteer_match_show_description" value="false">' : '';
+	$description_type = isset( $attr['description_type'] ) && 'plaintext' === $attr['description_type'] ? '<input type="hidden" name="volunteer_match_description_type" value="plaintext">' : '<input type="hidden" name="volunteer_match_description_type" value="HTML">';
 	$description_expanded_icon = sprintf( '<input type="hidden" name="volunteer_match_description_expanded_icon" value="%1$s">', isset( $attr['description_expanded_icon'] ) ? $attr['description_expanded_icon'] : 'arrow-up-alt2' );
 	$description_collapsed_icon = sprintf( '<input type="hidden" name="volunteer_match_description_collapsed_icon" value="%1$s">', isset( $attr['description_collapsed_icon'] ) ? $attr['description_collapsed_icon'] : 'arrow-down-alt2' );
    
@@ -146,6 +149,7 @@ function volunteer_match_extra_inputs( $attr ) {
 			"$button_connection_exist_text" .
 			"$link_color" .
 			"$description" .
+			"$description_type" .
 			"$description_expanded_icon" .
 			"$description_collapsed_icon" .
 			"$location" .
