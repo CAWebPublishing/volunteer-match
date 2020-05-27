@@ -1,6 +1,7 @@
 VolunteerMatch v1.0.11
 May 26, 2020
 - Added new shortcode for description type, description can be displayed as HTML or in plaintext
+- Added changelog.txt
 
 VolunteerMatch v1.0.10
 May 15, 2020

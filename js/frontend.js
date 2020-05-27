@@ -66,6 +66,7 @@ jQuery(document).ready(function(){
 			parentName = associated_form.find('.parentName input');
 			interests = associated_form.find('.interests input');
 			categories = associated_form.find('.categories input');
+			container = associated_form.find(' .container input');
 		}
 
 		if ( associated_form.length ){
@@ -629,6 +630,11 @@ jQuery(document).ready(function(){
 				if( categories.length ){
 					categories.val($(cats[0]).val() + category);
 				}
+			}
+
+			// update container if found
+			if( container.length ){
+				container.val( opp.container );
 			}
 
 		}
