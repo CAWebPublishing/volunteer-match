@@ -384,7 +384,11 @@ function volunteer_match_radius_options( $attr ) {
  *               $attr['id'] ID to a form connected to the dashboard.
  *               $attr['wpforms'] WPForms ID for the form connected to the dashboard, if $attr['id'] is set then $attr['id'] is used instead.
  *               $attr['description_type'] Whether or not to show opportunity descriptions in HTML or plaintext format, default is HTML.
- * 
+ *               $attr['show_when'] Whether or not to show opportunity date, default is true.
+ *               $attr['show_where'] Whether or not to show opportunity location, default is true.
+ *               $attr['show_great_for'] Whether or not to show opportunity great for, default is true.
+ *               $attr['show_skills'] Whether or not to show opportunity skills, default is true.
+ *
  * @return string
  */
 function volunteer_match_opportunity_func( $attr ) {
@@ -397,7 +401,7 @@ function volunteer_match_opportunity_func( $attr ) {
 	$opportunity = isset( $_GET['volunteer_opp_id'] ) ? sanitize_text_field( wp_unslash( $_GET['volunteer_opp_id'] ) ) : '';
 
 	$opportunity = volunteer_match_return_opportunities( array( 'ids' => $opportunity ) );
-	$opportunity = is_string( $opportunity ) ? json_decode( $opportunity ) : '';
+	$opportunity = is_string( $opportunity ) ? json_decode( $opportunity, true ) : '';
 
 	$display = ! empty( $opportunity ) ? volunteer_match_display_opportunity( $opportunity, $attr ) : '';
 
@@ -407,50 +411,164 @@ function volunteer_match_opportunity_func( $attr ) {
 /**
  * Display a Volunteer Match Opportunity
  *
- * @param  object $opp Opportunity Object
+ * @param  object $opportunity Opportunity Object.
  * @param  array  $attr Attributes for the shortcode.
  *                $attr['description_type'] Whether or not to show opportunity descriptions in HTML or plaintext format, default is HTML.
+ *               $attr['show_when'] Whether or not to show opportunity date, default is true.
+ *               $attr['show_where'] Whether or not to show opportunity location, default is true.
+ *               $attr['show_great_for'] Whether or not to show opportunity great for, default is true.
+ *               $attr['show_skills'] Whether or not to show opportunity skills, default is true.
  *
- * @return void
+ * @return string
  */
 function volunteer_match_display_opportunity( $opportunity, $attr ) {
-	if ( isset( $opportunity->resultsSize ) && $opportunity->resultsSize ) {
-		$opp      = $opportunity->opportunities[0];
-		$location = $opp->location;
+	if ( isset( $opportunity['resultsSize'] ) && $opportunity['resultsSize'] ) {
+		$opp      = $opportunity['opportunities'][0];
 
-		$title      = sprintf( '<p class="h3 m-0 opportunity-title">%1$s</p>', $opp->title );
-		$parent_name = sprintf( '<p class="opportunity-parentOrg-name">%1$s</p>', $opp->parentOrg->name );
+		$title       = sprintf( '<p class="h3 m-0 opportunity-title">%1$s</p>', $opp['title'] );
+		$parent_name = sprintf( '<p class="opportunity-parentOrg-name">%1$s</p>', $opp['parentOrg']['name'] );
 
-		$image      = isset( $opp->imageUrl ) ? sprintf( '<img src="%1$s" class="%1$s" alt="%2$s Image" class="float-left mr-2 opportunity-image" />', $opp->imageUrl, $opp->title ) : '';
+		$image = isset( $opp['imageUrl'] ) ? sprintf( '<img src="%1$s" alt="%2$s Image" class="float-left mr-2 opportunity-image" />', $opp['imageUrl'], $opp['title'] ) : '';
 
-		$header = sprintf( '<div class="header overflow-auto mb-2">%1$s%2$s%3$s</div>', $image, $title, $parent_name );
+		$header = sprintf( '<div class="header overflow-auto my-2">%1$s%2$s%3$s</div>', $image, $title, $parent_name );
 
-		$description = isset( $attr['description_type'] ) && 'plaintext' === $attr['description_type'] ? $opp->plaintextDescription : $opp->description;
+		$description = isset( $attr['description_type'] ) && 'plaintext' === $attr['description_type'] ? $opp['plaintextDescription'] : $opp['description'];
 		$description = sprintf( '<div class="opportunity-description">%1$s</div>', $description );
 
-		if ( $location->virtual ) {
+		// where.
+		$where = volunteer_match_opportunity_location( $opp, $attr );
+
+		// when.
+		$when = volunteer_match_opportunity_dates( $opp, $attr );
+
+		// skills.
+		$skills = volunteer_match_opportunity_skills( $opp, $attr );
+
+		// greatFor.
+		$great_for = volunteer_match_opportunity_great_for( $opp, $attr );
+		
+		$col1_class = 'col-lg-12';
+		$col2 = "";
+
+		if( ! empty($when) || 
+			! empty($where) || 
+			! empty($skills) || 
+			! empty($great_for) ){
+			$col1_class =  'col-lg-9';
+			$col2 = sprintf( '<div class="col-lg-3">%1$s%2$s%3$s%4$s</div>', $when, $where, $skills, $great_for );
+		}
+
+		$col1 = sprintf( '<div class="%1$s">%2$s%3$s</div>', $col1_class, $header, $description );
+
+		return "$col1$col2" ;
+	}
+
+	return 'No opportunity matched the requested ID.';
+}
+
+/**
+ * Display an opportunities location property
+ *
+ * @param  object $opportunity Opportunity Object.
+ * @param  array  $attr Attributes for the shortcode.
+ *               $attr['show_where'] Whether or not to show opportunity location, default is true.
+ * @return string
+ */
+function volunteer_match_opportunity_location( $opp, $attr ){
+	$l = "";
+	if (! isset($attr['show_where']) || "false" !== $attr['show_where']) {
+		$location = $opp['location'];
+		
+		if ( $location['virtual'] ) {
 			$location = '<p>Virtual</p>';
 		} else {
 			$location = array_filter(
 				array(
-					$location->street1,
-					$location->street2,
-					$location->city,
-					$location->region,
-					$location->postalCode,
+					$location['street1'],
+					$location['street2'],
+					$location['city'],
+					$location['region'],
+					$location['postalCode'],
 				)
 			);
 
 			$location = ! empty( $location ) ? sprintf( '<a href="https://www.google.com/maps/place/%1$s">%1$s</a>', implode( ', ', $location ) ) : '<p>N/A</p>';
 		}
-
-		$where = sprintf( '<div class="opportunity-location"><p class="h4 m-0">Where</p>%1$s</div>', $location );
-
-		$col1 = sprintf( '<div class="col-lg-9">%1$s%2$s</div>', $header, $description );
-		$col2 = sprintf( '<div class="col-lg-3">%1$s</div>', $where );
-
-		return "$col1$col2";
+		$l = sprintf( '<div class="opportunity-location mt-2"><p class="h4 m-0">Where</p>%1$s</div>', $location );
 	}
 
-	return 'No opportunity matched the requested ID.';
+	return $l;
+}
+
+/**
+ * Display an opportunities dates property
+ *
+ * @param  object $opportunity Opportunity Object.
+ * @param  array  $attr Attributes for the shortcode.
+ *               $attr['show_when'] Whether or not to show opportunity date, default is true.
+ * @return string
+ */
+function volunteer_match_opportunity_dates( $opp, $attr ){
+	$when = "";
+	if (! isset($attr['show_when']) || "false" !== $attr['show_when']) {
+		if ( ! $opp['dateRange']['ongoing'] ) {
+
+			$sdate = ! empty( $opp['dateRange']['startDate'] ) ? gmdate( 'M j, Y', strtotime( $opp['dateRange']['startDate'] ) ) : '';
+			$stime = ! empty( $opp['dateRange']['startTime'] ) ? gmdate( 'h:i a', strtotime( $opp['dateRange']['startTime'] ) ) : '';
+			$edate = ! empty( $opp['dateRange']['endDate'] ) ? gmdate( 'M j, Y', strtotime( $opp['dateRange']['endDate'] ) ) : '';
+			$etime = ! empty( $opp['dateRange']['endTime'] ) ? gmdate( 'h:i a', strtotime( $opp['dateRange']['endTime'] ) ) : '';
+
+			if ( ! empty( $sdate ) && ! empty( $stime ) ) {
+				$stime = " @ $stime";
+			}
+
+			if ( ! empty( $edate ) && ! empty( $etime ) ) {
+				$etime = " @ $etime";
+			}
+
+			if ( ! empty( $sdate ) && ! empty( $edate ) ) {
+				$edate = " - $edate";
+			}
+			$date = "$sdate$stime$edate$etime";
+		} else {
+			$date = 'Ongoing';
+		}
+		
+		$when = sprintf('<div class="opportunity-date mt-2"><p class="h4 m-0">When</p>%1$s</div>', $date);
+	}
+	return $when;
+}
+
+/**
+ * Display an opportunities skills property
+ *
+ * @param  object $opportunity Opportunity Object.
+ * @param  array  $attr Attributes for the shortcode.
+ *               $attr['show_skills'] Whether or not to show opportunity skills, default is true.
+ * @return string
+ */
+function volunteer_match_opportunity_skills( $opp, $attr ){
+	$s = "";
+    if (! isset($attr['show_skills']) || "false" !== $attr['show_skills']) {
+        $s = ! empty($opp['skillsNeeded']) ? implode(', ', explode(';', $opp['skillsNeeded'])) : "None";
+        $s = sprintf('<div class="opportunity-skills mt-2"><p class="h4 m-0">Skills</p><p>%1$s</p></div>', $s);
+    }
+	return $s;
+}
+
+/**
+ * Display an opportunities greatFor property
+ *
+ * @param  object $opportunity Opportunity Object.
+ * @param  array  $attr Attributes for the shortcode.
+ *               $attr['show_great_for'] Whether or not to show opportunity great for, default is true.
+ * @return string
+ */
+function volunteer_match_opportunity_great_for( $opp, $attr ){
+	$g = "";
+	if (! isset($attr['show_great_for']) || "false" !== $attr['show_great_for']) {
+        $g = ! empty($opp['greatFor']) ? implode(', ', array_map('ucfirst', $opp['greatFor'])) : '';
+        $g = ! empty($g) ? sprintf('<div class="opportunity-great-for mt-2"><p class="h4 m-0">Great For</p><p>%1$s</p></div>', $g) : '';
+    }
+	return $g;
 }
