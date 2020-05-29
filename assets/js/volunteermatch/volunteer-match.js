@@ -9,6 +9,7 @@ jQuery(document).ready(function(){
 		// Volunteer Match Shortcode Attributes
 		var hidden_match = $('div#volunteer-match input[name="volunteer_match_hidden"]');
 		var forms_id = $('div#volunteer-match input[name="volunteer_match_form_id"]');
+		var landing_page = $('div#volunteer-match input[name="volunteer_match_landing_page"]');
 		var link_color = $('div#volunteer-match input[name="volunteer_match_link_color"]');
 		var button_size = $('input[name="volunteer_match_button_size"]'); 
 		var button_color = $('input[name="volunteer_match_button_color"]'); 
@@ -363,12 +364,48 @@ jQuery(document).ready(function(){
 				// Title
 				var titleDiv = document.createElement('DIV');
 				var title = document.createElement('STRONG');
-				var titleSpan = document.createElement('SPAN');
 
 				$(titleDiv).addClass('opp-match-title');
 
 				$(title).html(`Opportunity: `);
 				
+				var titleSpan;
+				if( landing_page.length ){
+					titleSpan = document.createElement('A');
+					var page_params = `?volunteer_opp_id=${opp.id}`;
+					var cats = $('input[name="volunteer_match_interests[]"]:checked');
+					var interest = '';
+					var category = '';
+
+					if( cats.length ){
+						$.each( cats.slice(1), function(i, c){
+							interest += `,${c.title}`;
+							category += `,${c.value}`;
+						});
+					}
+
+					if( associated_form.length ){
+						page_params += `&firstName=${firstName.val()}` + 
+						`&lastName=${lastName.val()}` + 
+						`&email=${email.val()}` + 
+						`&phoneNumber=${phoneNumber.val()}` + 
+						`&zip=${zip.val()}` +
+						`&oppID=${opp.id}` + 
+						`&title=${opp.title}` + 
+						`&location=${opp.location.street1},${opp.location.city},${opp.location.region},${opp.location.postalCode}` + 
+						`&specialFlag=${volunteer_match_covid19.prop('checked')}` + 
+						`&parentOrgID=${opp.parentOrg.id}` + 
+						`&parentName=${opp.parentOrg.name}` + 
+						`&interests=${interest}` + 
+						`&categories=${category}` + 
+						`&container=${opp.container}`;
+					}
+
+					$(titleSpan).attr('href', landing_page.val() + page_params);
+				}else{
+					titleSpan = document.createElement('SPAN');
+				}
+
 				$(titleSpan).html(`${opp.title}`);
 
 				$(titleDiv).append(title);

@@ -10,11 +10,12 @@ add_shortcode( 'volunteer_match', 'volunteer_match_func' );
 add_shortcode( 'volunteer_match_opportunity', 'volunteer_match_opportunity_func' );
 
 /**
- * Renders Volunteer Match Search Dashboard
+ * Renders VolunteerMatch Search Dashboard
  *
  * @param  array $attr Attributes for this shortcode.
  *               $attr['hidden'] Whether or not to hide the Dashboard, default is false.
- *               $attr['font'] Font to use for the Volunteer Match Dashboard.
+ *               $attr['landing_page'] Page associated with the VolunteerMatch Opportunity shortcode.
+ *               $attr['font'] Font to use for the VolunteerMatch Dashboard.
  *               $attr['id'] ID to a form connected to the dashboard.
  *               $attr['wpforms'] WPForms ID for the form connected to the dashboard, if $attr['id'] is set then $attr['id'] is used instead.
  *               $attr['notify'] Notify when form is submitted, default if false.
@@ -76,11 +77,13 @@ function volunteer_match_func( $attr ) {
 }
 
 /**
- * Adds hidden inputs to the Volunteer Match Search Form
+ * Adds hidden inputs to the VolunteerMatch Search Form
  *
  * @param  array $attr Attributes for the shortcode.
+ *               $attr['hidden'] Whether or not to hide the Dashboard, default is false.
  *               $attr['id'] ID to a form connected to the dashboard.
  *               $attr['wpforms'] WPForms ID for the form connected to the dashboard, if $attr['id'] is set then $attr['id'] is used instead.
+ *               $attr['landing_page'] Page associated with the VolunteerMatch Opportunity shortcode.
  *               $attr['notify'] Notify when form is submitted, default if false.
  *               $attr['button_color'] Button background color.
  *               $attr['button_failed_color'] Button background color when signup failed.
@@ -135,10 +138,12 @@ function volunteer_match_extra_inputs( $attr ) {
 	$description_collapsed_icon = sprintf( '<input type="hidden" name="volunteer_match_description_collapsed_icon" value="%1$s">', isset( $attr['description_collapsed_icon'] ) ? $attr['description_collapsed_icon'] : 'arrow-down-alt2' );
 
 	$response_page = '<input type="hidden" value="1" name="volunteer_match_response_page">';
-
+	$landing_page = isset( $attr['landing_page'] ) ? sprintf( '<input type="hidden" value="%1$s" name="volunteer_match_landing_page">', $attr['landing_page'] ) : '';
+	
 	return "$nonce" .
 			"$notify" .
 			"$hidden" .
+			"$landing_page" .
 			"$forms_id" .
 			"$button_color" .
 			"$button_size" .
@@ -162,7 +167,7 @@ function volunteer_match_extra_inputs( $attr ) {
 }
 
 /**
- * Adds Location and Keyword inputs to Volunteer Match Search Form
+ * Adds Location and Keyword inputs to VolunteerMatch Search Form
  *
  * @param  array $attr Attributes for the shortcode.
  * @return string
@@ -186,7 +191,7 @@ function volunteer_match_search_row( $attr ) {
 }
 
 /**
- * Adds Volunteer Match Search Options
+ * Adds VolunteerMatch Search Options
  *
  * @param  array $attr Attributes for the shortcode.
  *               $attr['button_color'] Button background color.
@@ -249,7 +254,7 @@ function volunteer_match_search_options( $attr ) {
 }
 
 /**
- * Adds Volunteer Match Search Results structure
+ * Adds VolunteerMatch Search Results structure
  *
  * @param  array $attr Attributes for the shortcode.
  *               $attr['disclaimer'] Disclaimer text displayed above opportunities list, default is 'By checking Sign Up, your contact information will be shared with the host organization and you will receive an email.'.
@@ -285,7 +290,7 @@ function volunteer_match_search_results( $attr ) {
 }
 
 /**
- * Adds Volunteer Match Interest Menu
+ * Adds VolunteerMatch Interest Menu
 
  * @param  array $attr Attributes for this shortcode.
  *               $attr['interests'] Whether the interests should be compacted or full, default is compact.
@@ -378,7 +383,7 @@ function volunteer_match_radius_options( $attr ) {
 }
 
 /**
- * Renders Volunteer Match Opportunity Details
+ * Renders VolunteerMatch Opportunity Details
  *
  * @param  array $attr Attributes for this shortcode.
  *               $attr['id'] ID to a form connected to the dashboard.
@@ -409,7 +414,7 @@ function volunteer_match_opportunity_func( $attr ) {
 }
 
 /**
- * Display a Volunteer Match Opportunity
+ * Display a VolunteerMatch Opportunity
  *
  * @param  object $opportunity Opportunity Object.
  * @param  array  $attr Attributes for the shortcode.
