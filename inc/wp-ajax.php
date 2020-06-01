@@ -14,56 +14,73 @@ add_action( 'wp_ajax_nopriv_volunteer_match_create_connection', 'volunteer_match
 /**
  * Return List of Opportunities from VolunteerMatch EndPoint
  *
+ * @param  array $attr Attributes for this shortcode.
+ *               $attr['ids'] ID to a form connected to the dashboard.
  * @return void
  */
-function volunteer_match_return_opportunities() {
+function volunteer_match_return_opportunities( $attr = array() ) {
 	$volunteer_match_api_key = get_option( 'volunteer_match_api_key', '' );
 	$nonce                   = isset( $_POST['volunteer_match_search_opportunities_nonce'] ) &&
 		wp_verify_nonce( sanitize_key( $_POST['volunteer_match_search_opportunities_nonce'] ), 'volunteer_match_search_opportunities' );
 
 	// if no API Key supplied terminate.
 	// or invalid nonce.
-	if ( empty( $volunteer_match_api_key ) || ! $nonce ) {
+	if ( empty( $volunteer_match_api_key ) || ( ! $nonce && ! isset($attr['ids']) ) ) {
 		wp_die(); /* this is required to terminate immediately and return a proper response */
 	}
+
 	$volunteer_match_opp_endpoint = get_option( 'volunteer_match_opp_endpoint', '' );
 	$volunteer_match_opp_endpoint_graphql = get_option('volunteer_match_opp_endpoint_graphql', false);
 	$volunteer_match_opp_endpoint_environment = get_option('volunteer_match_opp_endpoint_environment', 'staging');
 
 	$post_args['headers'] = array( 'Content-Type' => 'application/json', 'x-api-key' => "$volunteer_match_api_key" );
 
-	$location   = isset( $_POST['volunteer_match_location'] ) ? sanitize_text_field( wp_unslash( $_POST['volunteer_match_location'] ) ) : '';
-	$virtual    = isset( $_POST['volunteer_match_type'] ) && 'virtual' === sanitize_text_field( wp_unslash( $_POST['volunteer_match_type'] ) ) ? 'true' : 'false';
-	$is_covid19 = isset( $_POST['volunteer_match_covid19'] ) ? 'true' : 'false';
-	$radius     = isset( $_POST['volunteer_match_radius'] ) ? sanitize_text_field( wp_unslash( $_POST['volunteer_match_radius'] ) ) : '';
-	$keyword    = isset( $_POST['volunteer_match_keyword'] ) && ! empty( $_POST['volunteer_match_keyword'] ) ? sanitize_text_field( wp_unslash( $_POST['volunteer_match_keyword'] ) ) : '';
-	$interests  = isset( $_POST['volunteer_match_interests'] ) ? $_POST['volunteer_match_interests'] : array();
-	$categories = array();
+	// if no Opportunity EndPoint set, set to appropriate VolunteerMatch EndPoints
+	if ( empty( $volunteer_match_opp_endpoint ) ) {
+		$volunteer_match_opp_endpoint = 'staging' === $volunteer_match_opp_endpoint_environment ?
+		'https://graphql.stage.volunteermatch.org/graphql' :
+		'https://graphql.volunteermatch.org/graphql';
 
-	foreach ( $interests as $i => $interest ) {
-		$categories = array_merge( $categories, explode( ',', $interest ) );
+		
+		// VolunteerMatch API endpoints use GraphQL
+		$volunteer_match_opp_endpoint_graphql = true;
 	}
-	$categories = array_unique( $categories );
-	$categories = ! empty( $categories ) ? implode( ',', $categories ) : '';
 
-	$page = isset( $_POST['volunteer_match_response_page'] ) ? sanitize_text_field( wp_unslash( $_POST['volunteer_match_response_page'] ) ) : '1';
+	// if requesting specific opportunities
+	if( isset( $attr['ids'] ) ){
+		$search_input = sprintf('input:{ids:[%1$s]}', $attr['ids'] );
+		$location = 'ids=' . $attr['ids'];
+		$virtual    = "";
+		$is_covid19 = "";
+		$radius     = "";
+		$keyword    = "";
+		$interests  = "";
+		$categories = "";
+		$page = "";
+	// requesting all opportunities
+	}else{
+		// Get requested parameters
+		$location   = isset( $_POST['volunteer_match_location'] ) ? sanitize_text_field( wp_unslash( $_POST['volunteer_match_location'] ) ) : '';
+		$virtual    = isset( $_POST['volunteer_match_type'] ) && 'virtual' === sanitize_text_field( wp_unslash( $_POST['volunteer_match_type'] ) ) ? 'true' : 'false';
+		$is_covid19 = isset( $_POST['volunteer_match_covid19'] ) ? 'true' : 'false';
+		$radius     = isset( $_POST['volunteer_match_radius'] ) ? sanitize_text_field( wp_unslash( $_POST['volunteer_match_radius'] ) ) : '';
+		$keyword    = isset( $_POST['volunteer_match_keyword'] ) && ! empty( $_POST['volunteer_match_keyword'] ) ? sanitize_text_field( wp_unslash( $_POST['volunteer_match_keyword'] ) ) : '';
+		$interests  = isset( $_POST['volunteer_match_interests'] ) ? $_POST['volunteer_match_interests'] : array();
+		$categories = array();
 
-	// if no Opportunity EndPoint or,
-	// Opportunity is using GraphQL, setup query
-    if ( empty( $volunteer_match_opp_endpoint ) || $volunteer_match_opp_endpoint_graphql) {
+		foreach ( $interests as $i => $interest ) {
+			$categories = array_merge( $categories, explode( ',', $interest ) );
+		}
+		$categories = array_unique( $categories );
+		$categories = ! empty( $categories ) ? implode( ',', $categories ) : '';
+	
+		$page = isset( $_POST['volunteer_match_response_page'] ) ? sanitize_text_field( wp_unslash( $_POST['volunteer_match_response_page'] ) ) : '1';
+
+		// create input query for GraphQL endpoints
 		$search_input = sprintf('input:{location:\"%1$s\", specialFlag:\"%2$s\", virtual: %3$s, pageNumber: %4$s, categories: [%5$s], sortCriteria: %6$s}', 
-			$location, 'true' === $is_covid19 ? 'covid19' : '' , $virtual, $page, $categories, 'relevance' );
-		$date_range = 'dateRange{endDate,endTime,ongoing,singleDayOpps,startDate,startTime}';
-		$location_object = 'location{street1,street2,city,country,postalCode,region,virtual, geoLocation{accuracy,latitude,longitude}}';
-		$parent_org = "parentOrg{id,phoneNumber,imageUrl,url,mission,name,description,$location_object}";
-		$requirements = "requirements{bgCheck,drLicense,minimumAge,orientation}";
-		$custom_fields = "customFields{fieldId,fieldLabel,fieldType,required,choices}";
-		$opportunity_location_object = "{resultsSize,currentPage,opportunities{id,title,categories,specialFlag,container,description,plaintextDescription,volunteersNeeded,$date_range,$custom_fields,$requirements,$parent_org,$location_object}}";
+		$location, 'true' === $is_covid19 ? 'covid19' : '' , $virtual, $page, $categories, 'relevance' );
 
-		$post_args['body']= "{ \"query\" : \"{ searchOpportunities($search_input)$opportunity_location_object }\" }";
-
-    // else setup URL params
-    }else{
+		// create URL params for API endpoints
 		$location = "location=$location";
 		$is_covid19 = "&isCovid19=$is_covid19";
 		$virtual = "&virtual=$virtual";
@@ -72,24 +89,23 @@ function volunteer_match_return_opportunities() {
 		$keyword = ! empty( $keyword ) ? "&keywords=$keyword" : '';
 		$radius = ! empty( $radius ) ? "&radius=$radius" : '';
 	
-		$volunteer_match_opp_endpoint .= "?$location$virtual$is_covid19$categories$keyword$radius$page";
 	}
+	
+	// if endpoint is GraphQL
+	if( $volunteer_match_opp_endpoint_graphql ){
+		$date_range = 'dateRange{endDate,endTime,ongoing,singleDayOpps,startDate,startTime}';
+		$location_object = 'location{street1,street2,city,country,postalCode,region,virtual, geoLocation{accuracy,latitude,longitude}}';
+		$parent_org = "parentOrg{id,phoneNumber,imageUrl,url,mission,name,description,$location_object}";
+		$requirements = "requirements{bgCheck,drLicense,minimumAge,orientation}";
+		$custom_fields = "customFields{fieldId,fieldLabel,fieldType,required,choices}";
+		$opportunity_location_object = "{resultsSize,currentPage,opportunities{id,title,categories,imageUrl,specialFlag,container,description,plaintextDescription,volunteersNeeded,$date_range,$custom_fields,$requirements,$parent_org,$location_object}}";
 
-	// if no Opportunity EndPoint set, set to appropriate Volunteer Match EndPoints
-	if ( empty( $volunteer_match_opp_endpoint ) ) {
-		$volunteer_match_opp_endpoint = 'staging' === $volunteer_match_opp_endpoint_environment ?
-		'https://graphql.stage.volunteermatch.org/graphql' :
-		'https://graphql.volunteermatch.org/graphql';
+		$post_args['body']= "{ \"query\" : \"{ searchOpportunities($search_input)$opportunity_location_object }\" }";
 
-		// Volunteer Match API endpoints use GraphQL
-		$volunteer_match_opp_endpoint_graphql = true;
 		$response = wp_remote_post( $volunteer_match_opp_endpoint, $post_args );
 	}else{
-		if( $volunteer_match_opp_endpoint_graphql ){
-			$response = wp_remote_post( $volunteer_match_opp_endpoint, $post_args );
-		}else{
-			$response = wp_remote_get( $volunteer_match_opp_endpoint, $post_args );
-		}
+		$volunteer_match_opp_endpoint .= "?$location$virtual$is_covid19$categories$keyword$radius$page";
+		$response = wp_remote_get( $volunteer_match_opp_endpoint, $post_args );
 	}
 
 	if ( 200 === wp_remote_retrieve_response_code( $response ) ) {
@@ -102,18 +118,22 @@ function volunteer_match_return_opportunities() {
 			$result = json_encode( $result );
 		}
 		
-		wp_send_json( $result );
 	} else {
-		$res['error']    = true;
-		$res['response'] = wp_remote_retrieve_body( $response );
-		wp_send_json( $res );
+		$result['error']    = true;
+		$result['response'] = wp_remote_retrieve_body( $response );
 	}
 
-	wp_die(); /* this is required to terminate immediately and return a proper response */
+	if( wp_doing_ajax() ){
+		wp_send_json( $result );
+		wp_die();
+	}else{
+		return $result;
+	}
+
 }
 
 /**
- * Create a volunteer match connection using the VolunteerMatch createConnection function API endpoint
+ * Create a VolunteerMatch connection using the VolunteerMatch createConnection function API endpoint
  *
  * @return void
  */
@@ -166,7 +186,7 @@ function volunteer_match_create_connection() {
 		);
 	}
 	
-	// if no Opportunity EndPoint set, set to appropriate Volunteer Match EndPoints
+	// if no Opportunity EndPoint set, set to appropriate VolunteerMatch EndPoints
 	if ( empty( $volunteer_match_create_connection_endpoint ) ) {
 		$volunteer_match_create_connection_endpoint = 'staging' === $volunteer_match_create_connection_endpoint_environment ?
 		'https://graphql.stage.volunteermatch.org/graphql' :
