@@ -1,10 +1,10 @@
 <?php
 /**
- * Plugin Name: Volunteer Match Shortcode
+ * Plugin Name: VolunteerMatch Shortcode
  * Plugin URI: "https://github.com/Danny-Guzman/volunteer-match/"
  * Description: Adds a shortcode that display a VolunteerMatch.org search dashboard and opportunities results.
  * Author: Danny Guzman
- * Version: 1.0.11
+ * Version: 1.1.0
  * Author URI: "https://github.com/Danny-Guzman/"
  *
  * @package VolunteerMatch

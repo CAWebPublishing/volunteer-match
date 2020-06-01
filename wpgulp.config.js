@@ -15,6 +15,7 @@ module.exports = {
 	], 
 	frontendJS: [ // Frontend JS 
 		'assets/js/volunteermatch/volunteer-match.js',
+		'assets/js/volunteermatch/volunteer-match-opportunity.js',
 	],  
 	adminCSS:[ // WP Backend Admin CSS
 		'assets/scss/admin.scss',
