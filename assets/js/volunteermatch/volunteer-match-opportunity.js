@@ -5,21 +5,22 @@ jQuery(document).ready(function(){
 
 	if( volunteer_match_opportunity.length ){
 		
-		// Volunteer Match Shortcode Attributes
-		var forms_id = $('div#volunteer-match-opportunity input[name="volunteer_match_form_id"]');
+		// VolunteerMatch Shortcode Attributes
+		var forms_id = volunteer_match_opportunity.attr('data-target');
+		var show_notify = $('input[name="volunteer_match_opp_show_notify"]');
 
-		// Volunteer Match DOMs
-		var volunteer_match_form_nonce = $('div#volunteer-match-opportunity input[name="volunteer_match_opportunity_nonce"]');
-		
 		// Associated Form
 		var associated_form = {};
 
 		// Form Params
-		var oppID, oppTitle, oppLocation, oppIsCovid19, parentOrgID, parentName, interests, categories = {};
+		var zip, firstName, lastName, oppID, oppTitle, oppLocation, oppIsCovid19, parentOrgID, parentName, interests, categories = {};
 
 		if( forms_id.length ){
-			associated_form = $( `#${forms_id.val()}` );
+			associated_form = $( `#${forms_id}` );
 			// associated form opportunity inputs
+			firstName = associated_form.find('.firstName input');
+			lastName = associated_form.find('.lastName input');
+			zip = associated_form.find('.zip input');
 			oppID = associated_form.find('.oppID input');
 			oppTitle = associated_form.find('.title input');
 			oppLocation = associated_form.find('.location input');
@@ -29,6 +30,8 @@ jQuery(document).ready(function(){
 			interests = associated_form.find('.interests input');
 			categories = associated_form.find('.categories input');
 			container = associated_form.find(' .container input');
+
+			update_opp_form_inputs();
 		}
 
 		if ( associated_form.length ){
@@ -53,87 +56,88 @@ jQuery(document).ready(function(){
 								contentType: false,
 								processData: false,
 								success: function( submitted ){
-									if( show_notify.length && true == show_notify.val() ){
-										alert( `Thank you, ${firstName.val()} ${lastName.val()} for you interest in volunteering.`);
+									if( show_notify.length && "true" == show_notify.val() ){
+										var f = firstName.length ? firstName.val() : '';
+										var l = lastName.length ? lastName.val() : '';
+										var n = f.length && l.length ? `${firstName.val()} ${lastName.val()}` : `${firstName.val()}${lastName.val()}`
+
+										n = n.length ? `, ${n} ` : ' ';
+
+										alert( `Thank you${n}for you interest in volunteering.`);
 									}
+									associated_form.addClass('hidden');
 								}
 							 })
 						}
 						
 					}
 				});
+
+				zip.keypress( function(e){
+					volunteer_match_form.find('.was-validated').removeClass('was-validated');
+		
+					//if the input is not a digit don't type anything
+					if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
+						return false;
+					}
+				});
+		
+		
 		}
 
-		volunteer_match_location.keypress( function(e){
-			volunteer_match_form.find('.was-validated').removeClass('was-validated');
 
-			//if the input is not a digit don't type anything
-			if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
-				return false;
-			}
-		});
+		function update_opp_form_inputs(){
+			var id = volunteer_match_opportunity.find('input[name="volunteer_match_opp_id"]');
+			var opp_title = volunteer_match_opportunity.find('input[name="volunteer_match_opp_title"]');
+			var is_covid = volunteer_match_opportunity.find('input[name="volunteer_match_opp_is_covid"]');
+			var parent_org_id = volunteer_match_opportunity.find('input[name="volunteer_match_opp_parent_org_id"]');
+			var parent_name = volunteer_match_opportunity.find('input[name="volunteer_match_opp_parent_org_name"]');
+			var opp_location = volunteer_match_opportunity.find('input[name="volunteer_match_opp_location"]');
+			var opp_container = volunteer_match_opportunity.find('input[name="volunteer_match_opp_container"]');
+			var category = volunteer_match_opportunity.find('input[name="volunteer_match_opp_categories"]');
+			var ints = volunteer_match_opportunity.find('input[name="volunteer_match_opp_interests"]');
 
-		function update_opp_form_inputs( opp ){
 			// update oppID if found
 			if( oppID.length ){
-				oppID.val(opp.id);
+				oppID.val(id.val());
 			}
 			// update oppTitle if found
 			if( oppTitle.length ){
-				oppTitle.val(opp.title);
+				oppTitle.val(opp_title.val());
 			}
 			// update oppIsCovid19 if found
 			if( oppIsCovid19.length ){
-				oppIsCovid19.val(volunteer_match_covid19.prop('checked'));
+				oppIsCovid19.val(is_covid.val());
 			}
 			
-			// if there is parentOrg information
-			if( undefined !== opp.parentOrg ){
-				// update parentOrgID if found
-				if( parentOrgID.length ){
-					parentOrgID.val(opp.parentOrg.id);
-				}
-				// update parentName if found
-				if( parentName.length ){
-					parentName.val(opp.parentOrg.name);
-				}
+			// update parentOrgID if found
+			if( parentOrgID.length ){
+				parentOrgID.val(parent_org_id.val());
+			}
+	
+			// update parentName if found
+			if( parentName.length ){
+				parentName.val(parent_name.val());
 			}
 
 			// update oppLocation if found
 			if( oppLocation.length ){
-				var addr = `${opp.location.street1},${opp.location.city},${opp.location.region},${opp.location.postalCode}`;
-				oppLocation.val(addr);
+				oppLocation.val(opp_location.val());
 			}
 
-			// update oppLocation if found
-			if( zip.length ){
-				zip.val(volunteer_match_location.val());
+			// update interests if found
+			if( interests.length ){
+				interests.val(ints.val());
 			}
 
-			var cats = $('input[name="volunteer_match_interests[]"]:checked');
-
-			if( cats.length ){
-				var interest = '';
-				var category = '';
-
-				$.each( cats.slice(1), function(i, c){
-					interest += `,${c.title}`;
-					category += `,${c.value}`;
-				});
-
-				// update interests if found
-				if( interests.length ){
-					interests.val($(cats[0]).html() + interest);
-				}
-				// updated categories if found
-				if( categories.length ){
-					categories.val($(cats[0]).val() + category);
-				}
+			// updated categories if found
+			if( categories.length ){
+				categories.val(category.val());
 			}
 
 			// update container if found
 			if( container.length ){
-				container.val( opp.container );
+				container.val( opp_container.val() );
 			}
 
 		}

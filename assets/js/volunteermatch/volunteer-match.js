@@ -6,7 +6,7 @@ jQuery(document).ready(function(){
 	if( volunteer_match.length ){
 		var google_place_link = 'https://www.google.com/maps/place/';
 
-		// Volunteer Match Shortcode Attributes
+		// VolunteerMatch Shortcode Attributes
 		var hidden_match = $('div#volunteer-match input[name="volunteer_match_hidden"]');
 		var forms_id = $('div#volunteer-match input[name="volunteer_match_form_id"]');
 		var landing_page = $('div#volunteer-match input[name="volunteer_match_landing_page"]');
@@ -31,7 +31,7 @@ jQuery(document).ready(function(){
 		var show_dates = $('input[name="volunteer_match_show_date"]');
 		var response_page = $('input[name="volunteer_match_response_page"]');
 
-		// Volunteer Match DOMs
+		// VolunteerMatch DOMs
 		var volunteer_match_form = $('div#volunteer-match form');
 		var volunteer_match_opps = $('div#volunteer-match #volunteer-match-opps');
 		var volunteer_match_opps_list = $('div#volunteer-match #volunteer-match-opp-list');

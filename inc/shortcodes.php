@@ -401,7 +401,7 @@ function volunteer_match_opportunity_func( $attr ) {
 	$nonce = isset( $nonce ) && wp_verify_nonce( sanitize_key( $nonce ), 'volunteer_match_opportunity' );
 
 	$forms_id = isset( $attr['id'] ) ? sprintf( ' data-target="%1$s"', $attr['id'] ) : '';
-	$forms_id = empty( $id ) && isset( $attr['wpforms'] ) ? sprintf( ' data-target="wpforms-%1$s"', $attr['wpforms'] ) : '';
+	$forms_id = empty( $id ) && isset( $attr['wpforms'] ) ? sprintf( ' data-target="wpforms-form-%1$s"', $attr['wpforms'] ) : '';
 
 	$opportunity = isset( $_GET['volunteer_opp_id'] ) ? sanitize_text_field( wp_unslash( $_GET['volunteer_opp_id'] ) ) : '';
 
@@ -419,6 +419,7 @@ function volunteer_match_opportunity_func( $attr ) {
  * @param  object $opportunity Opportunity Object.
  * @param  array  $attr Attributes for the shortcode.
  *                $attr['description_type'] Whether or not to show opportunity descriptions in HTML or plaintext format, default is HTML.
+ *               $attr['notify'] Notify when form is submitted, default if false.
  *               $attr['show_when'] Whether or not to show opportunity date, default is true.
  *               $attr['show_where'] Whether or not to show opportunity location, default is true.
  *               $attr['show_great_for'] Whether or not to show opportunity great for, default is true.
@@ -452,6 +453,8 @@ function volunteer_match_display_opportunity( $opportunity, $attr ) {
 		// greatFor.
 		$great_for = volunteer_match_opportunity_great_for( $opp, $attr );
 		
+		$hidden_fields = volunteer_match_opportunity_hidden_fields( $opp, $attr );
+
 		$col1_class = 'col-lg-12';
 		$col2 = "";
 
@@ -463,12 +466,91 @@ function volunteer_match_display_opportunity( $opportunity, $attr ) {
 			$col2 = sprintf( '<div class="col-lg-3">%1$s%2$s%3$s%4$s</div>', $when, $where, $skills, $great_for );
 		}
 
-		$col1 = sprintf( '<div class="%1$s">%2$s%3$s</div>', $col1_class, $header, $description );
+		$col1 = sprintf( '<div class="%1$s">%2$s%3$s%4$s</div>', $col1_class, $header, $description, $hidden_fields );
 
 		return "$col1$col2" ;
 	}
 
 	return 'No opportunity matched the requested ID.';
+}
+
+/**
+ * Add VolunteerMatch Opportunity hidden fields
+ *
+ * @param  object $opportunity Opportunity Object.
+ * @param  array $attr Attributes for this shortcode.
+ *               $attr['notify'] Notify when form is submitted, default if false.
+ * 
+ * @return string
+ */
+function volunteer_match_opportunity_hidden_fields( $opp, $attr ){
+	$location = $opp['location'];
+
+	// id
+	$id = sprintf('<input type="hidden" name="volunteer_match_opp_id" value="%1$s">', $opp['id'] );
+
+	// title
+	$opp_title = sprintf('<input type="hidden" name="volunteer_match_opp_title" value="%1$s">', $opp['title'] );
+
+	// is_covid
+	$is_covid = ! empty( $opp['specialFlag'] ) && in_array( 'covid19', $opp['specialFlag'] ) ? 'true' : 'false';
+	$is_covid = sprintf('<input type="hidden" name="volunteer_match_opp_is_covid" value="%1$s">', $is_covid );
+
+	// parentOrgId
+	$parent_org_id = sprintf('<input type="hidden" name="volunteer_match_opp_parent_org_id" value="%1$s">', $opp['parentOrg']['id'] );
+	
+	// parentName
+	$parent_name = sprintf('<input type="hidden" name="volunteer_match_opp_parent_org_name" value="%1$s">', $opp['parentOrg']['name'] );
+
+	// location
+	$opp_location = '';
+
+	if( ! $location['virtual'] ){
+		$opp_location = array_filter(
+			array(
+				$location['street1'],
+				$location['street2'],
+				$location['city'],
+				$location['region'],
+				$location['postalCode'],
+			)
+		);
+
+		$opp_location = implode(',', $opp_location);
+	}
+	
+	$opp_location = sprintf('<input type="hidden" name="volunteer_match_opp_location" value="%1$s">', $opp_location );
+
+	// container
+	$container = sprintf('<input type="hidden" name="volunteer_match_opp_container" value="%1$s">', $opp['container'] );
+
+	// categories & interests
+	$categories = isset( $opp['categories'] ) && ! empty( $opp['categories'] ) ? $opp['categories'] : '';
+	$ints = get_option( 'volunteer_match_interests', array() );
+	$interests = array();
+
+	if( ! empty($categories) ){
+		foreach( $ints as $i => $data ){
+			$cats = explode( ',', $data['cats'] );
+			$title = $data['title'];
+
+			foreach( $cats as $c => $cat ){
+				if( in_array( $cat, $categories ) ){
+					$interests[] = $title;
+					break;
+				}
+			}
+		}
+
+	}
+
+	$categories = sprintf('<input type="hidden" name="volunteer_match_opp_categories" value="%1$s">', implode( ',', $categories ) );
+	$interests = sprintf('<input type="hidden" name="volunteer_match_opp_interests" value="%1$s">', implode( ',', $interests ) );
+
+	// notify 
+	$notify = isset( $attr['notify'] ) && 'true' === $attr['notify'] ? sprintf( '<input type="hidden" name="volunteer_match_opp_show_notify" value="true">', $attr['notify'] ) : '';
+
+	return "$id$opp_title$is_covid$parent_org_id$parent_name$opp_location$categories$interests$container$notify";
 }
 
 /**
