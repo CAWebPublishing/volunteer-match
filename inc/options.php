@@ -19,8 +19,8 @@ function volunteer_match_admin_menu() {
 
 	/* Add VolunteerMatch Options */
 	add_menu_page(
-		'Volunteer Match',
-		'Volunteer Match',
+		'VolunteerMatch',
+		'VolunteerMatch',
 		'manage_options',
 		'volunteer-match-options',
 		'volunteer_match_option_page',
