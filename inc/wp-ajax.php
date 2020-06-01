@@ -98,7 +98,7 @@ function volunteer_match_return_opportunities( $attr = array() ) {
 		$parent_org = "parentOrg{id,phoneNumber,imageUrl,url,mission,name,description,$location_object}";
 		$requirements = "requirements{bgCheck,drLicense,minimumAge,orientation}";
 		$custom_fields = "customFields{fieldId,fieldLabel,fieldType,required,choices}";
-		$opportunity_location_object = "{resultsSize,currentPage,opportunities{id,title,categories,specialFlag,container,description,plaintextDescription,volunteersNeeded,$date_range,$custom_fields,$requirements,$parent_org,$location_object}}";
+		$opportunity_location_object = "{resultsSize,currentPage,opportunities{id,title,categories,imageUrl,specialFlag,container,description,plaintextDescription,volunteersNeeded,$date_range,$custom_fields,$requirements,$parent_org,$location_object}}";
 
 		$post_args['body']= "{ \"query\" : \"{ searchOpportunities($search_input)$opportunity_location_object }\" }";
 

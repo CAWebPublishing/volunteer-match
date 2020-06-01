@@ -427,7 +427,7 @@ function volunteer_match_opportunity_func( $attr ) {
  * @return string
  */
 function volunteer_match_display_opportunity( $opportunity, $attr ) {
-	if ( isset( $opportunity['resultsSize'] ) && $opportunity['resultsSize'] ) {
+	if ( isset( $opportunity['resultsSize'] ) && $opportunity['resultsSize'] && isset( $opportunity['opportunities'][0] ) ) {
 		$opp      = $opportunity['opportunities'][0];
 
 		$title       = sprintf( '<p class="h3 m-0 opportunity-title">%1$s</p>', $opp['title'] );
