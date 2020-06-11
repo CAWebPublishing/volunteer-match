@@ -26,6 +26,9 @@ $volunteer_match_create_connection_endpoint_graphql = get_option('volunteer_matc
 $volunteer_match_categories = volunteer_match_categories();
 $volunteer_match_interests  = get_option( 'volunteer_match_interests', array() );
 
+$volunteer_match_great_for  = get_option( 'volunteer_match_great_for', array() );
+$volunteer_match_age_groups = array('groups', 'kids', 'seniors', 'teens');
+
 $volunteer_match_radius = get_option( 'volunteer_match_radius', array() );
 $volunteer_match_radius = implode( ',', $volunteer_match_radius);
 
@@ -39,12 +42,14 @@ $volunteer_match_bootstrap_support = get_option('volunteer_match_bootstrap_suppo
 			<ul class="list-group list-group-horizontal">
 				<li class="list-group-item"><a href="#volunteer-match-settings" data-toggle="collapse" aria-expanded="true" aria-controls="volunteer-match-settings" class="text-decoration-none">Settings</a></li>
 				<li class="list-group-item"><a href="#volunteer-match-interests" data-toggle="collapse" aria-expanded="false" aria-controls="volunteer-match-interests" class="text-decoration-none">Interests</a></li>
+				<li class="list-group-item"><a href="#volunteer-match-great-for" data-toggle="collapse" aria-expanded="false" aria-controls="volunteer-match-great-for" class="text-decoration-none">Great For</a></li>
 				<li class="list-group-item"><a href="#volunteer-match-advanced" data-toggle="collapse" aria-expanded="false" aria-controls="volunteer-match-interests" class="text-decoration-none">Advanced</a></li>
 			</ul>
 		</div>
 		<?php
 			include_once 'sections/vm.php';
 			include_once 'sections/interests.php';
+			include_once 'sections/great-for.php';
 			include_once 'sections/advanced.php';
 		?>
 		

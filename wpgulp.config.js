@@ -21,7 +21,7 @@ module.exports = {
 		'assets/scss/admin.scss',
 	],
 	adminJS: [ // WP Backend Admin JS
-		'assets/js/volunteermatch/admin.js',
+		'assets/js/volunteermatch/options/*.js',
 		'assets/js/bootstrap/bootstrap.bundle.js',
 	], 
 	bootStrapJS: [ // Bootstrap JS

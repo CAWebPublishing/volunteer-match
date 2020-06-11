@@ -386,8 +386,10 @@ function volunteer_match_radius_options( $attr ) {
  * Renders VolunteerMatch Opportunity Details
  *
  * @param  array $attr Attributes for this shortcode.
+ *               $attr['opp_id'] Opportunity ID to render.
  *               $attr['id'] ID to a form connected to the dashboard.
  *               $attr['wpforms'] WPForms ID for the form connected to the dashboard, if $attr['id'] is set then $attr['id'] is used instead.
+ *               $attr['notify'] Notify when form is submitted, default if false.
  *               $attr['description_type'] Whether or not to show opportunity descriptions in HTML or plaintext format, default is HTML.
  *               $attr['show_when'] Whether or not to show opportunity date, default is true.
  *               $attr['show_where'] Whether or not to show opportunity location, default is true.
@@ -404,6 +406,7 @@ function volunteer_match_opportunity_func( $attr ) {
 	$forms_id = empty( $id ) && isset( $attr['wpforms'] ) ? sprintf( ' data-target="wpforms-form-%1$s"', $attr['wpforms'] ) : '';
 
 	$opportunity = isset( $_GET['volunteer_opp_id'] ) ? sanitize_text_field( wp_unslash( $_GET['volunteer_opp_id'] ) ) : '';
+	$opportunity = empty($opportunity) && isset( $attr['opp_id'] ) ? $attr['opp_id'] : $opportunity;
 
 	$opportunity = volunteer_match_return_opportunities( array( 'ids' => $opportunity ) );
 	$opportunity = is_string( $opportunity ) ? json_decode( $opportunity, true ) : '';
