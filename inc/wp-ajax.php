@@ -57,6 +57,7 @@ function volunteer_match_return_opportunities( $attr = array() ) {
 		$interests  = "";
 		$categories = "";
 		$page = "";
+		$great_for = "";
 	// requesting all opportunities
 	}else{
 		// Get requested parameters
@@ -67,6 +68,7 @@ function volunteer_match_return_opportunities( $attr = array() ) {
 		$keyword    = isset( $_POST['volunteer_match_keyword'] ) && ! empty( $_POST['volunteer_match_keyword'] ) ? sanitize_text_field( wp_unslash( $_POST['volunteer_match_keyword'] ) ) : '';
 		$interests  = isset( $_POST['volunteer_match_interests'] ) ? $_POST['volunteer_match_interests'] : array();
 		$categories = array();
+		$great_for  = isset( $_POST['volunteer_match_great_for'] ) ? $_POST['volunteer_match_great_for'] : '';
 
 		foreach ( $interests as $i => $interest ) {
 			$categories = array_merge( $categories, explode( ',', $interest ) );
@@ -77,8 +79,8 @@ function volunteer_match_return_opportunities( $attr = array() ) {
 		$page = isset( $_POST['volunteer_match_response_page'] ) ? sanitize_text_field( wp_unslash( $_POST['volunteer_match_response_page'] ) ) : '1';
 
 		// create input query for GraphQL endpoints
-		$search_input = sprintf('input:{location:\"%1$s\", specialFlag:\"%2$s\", virtual: %3$s, pageNumber: %4$s, categories: [%5$s], sortCriteria: %6$s}', 
-		$location, 'true' === $is_covid19 ? 'covid19' : '' , $virtual, $page, $categories, 'relevance' );
+		$search_input = sprintf('input:{location:\"%1$s\", specialFlag:\"%2$s\", virtual: %3$s, pageNumber: %4$s, categories: [%5$s], sortCriteria: %6$s, greatFor: [%7$s]}', 
+		$location, 'true' === $is_covid19 ? 'covid19' : '' , $virtual, $page, $categories, 'relevance', $great_for );
 
 		// create URL params for API endpoints
 		$location = "location=$location";
@@ -88,7 +90,7 @@ function volunteer_match_return_opportunities( $attr = array() ) {
 		$categories = ! empty( $categories ) ? "&categories=$categories" : '';
 		$keyword = ! empty( $keyword ) ? "&keywords=$keyword" : '';
 		$radius = ! empty( $radius ) ? "&radius=$radius" : '';
-	
+		$great_for = ! empty( $great_for ) ? "&greatFor=$great_for" : '';
 	}
 	
 	// if endpoint is GraphQL
@@ -98,13 +100,13 @@ function volunteer_match_return_opportunities( $attr = array() ) {
 		$parent_org = "parentOrg{id,phoneNumber,imageUrl,url,mission,name,description,$location_object}";
 		$requirements = "requirements{bgCheck,drLicense,minimumAge,orientation}";
 		$custom_fields = "customFields{fieldId,fieldLabel,fieldType,required,choices}";
-		$opportunity_location_object = "{resultsSize,currentPage,opportunities{id,title,categories,imageUrl,specialFlag,container,description,plaintextDescription,volunteersNeeded,$date_range,$custom_fields,$requirements,$parent_org,$location_object}}";
+		$opportunity_location_object = "{resultsSize,currentPage,opportunities{id,title,categories,imageUrl,specialFlag,greatFor,container,description,plaintextDescription,volunteersNeeded,$date_range,$custom_fields,$requirements,$parent_org,$location_object}}";
 
 		$post_args['body']= "{ \"query\" : \"{ searchOpportunities($search_input)$opportunity_location_object }\" }";
 
 		$response = wp_remote_post( $volunteer_match_opp_endpoint, $post_args );
 	}else{
-		$volunteer_match_opp_endpoint .= "?$location$virtual$is_covid19$categories$keyword$radius$page";
+		$volunteer_match_opp_endpoint .= "?$location$virtual$is_covid19$categories$keyword$radius$page$great_for";
 		$response = wp_remote_get( $volunteer_match_opp_endpoint, $post_args );
 	}
 

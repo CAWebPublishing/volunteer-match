@@ -50,16 +50,16 @@ function volunteer_match_option_page() {
 function volunteer_match_save_options( $values = array() ) {
 	update_option( 'volunteer_match_api_key', $values['volunteer_match_api_key'] );
 	update_option( 'volunteer_match_opp_endpoint', esc_url_raw( $values['volunteer_match_opp_endpoint'] ) );
-	
+
 	$volunteer_match_opp_endpoint_graphql = isset( $values['volunteer_match_opp_endpoint_graphql'] ) ? true : false;
-	update_option('volunteer_match_opp_endpoint_graphql', $volunteer_match_opp_endpoint_graphql);
-	update_option('volunteer_match_opp_endpoint_environment', $values['volunteer_match_opp_endpoint_environment']);
+	update_option( 'volunteer_match_opp_endpoint_graphql', $volunteer_match_opp_endpoint_graphql );
+	update_option( 'volunteer_match_opp_endpoint_environment', $values['volunteer_match_opp_endpoint_environment'] );
 
 	update_option( 'volunteer_match_create_connection_endpoint', esc_url_raw( $values['volunteer_match_create_connection_endpoint'] ) );
-	
+
 	$volunteer_match_create_connection_endpoint_graphql = isset( $values['volunteer_match_create_connection_endpoint_graphql'] ) ? true : false;
-	update_option('volunteer_match_create_connection_endpoint_graphql', $volunteer_match_create_connection_endpoint_graphql);
-	update_option('volunteer_match_create_connection_endpoint_environment', $values['volunteer_match_create_connection_endpoint_environment']);
+	update_option( 'volunteer_match_create_connection_endpoint_graphql', $volunteer_match_create_connection_endpoint_graphql );
+	update_option( 'volunteer_match_create_connection_endpoint_environment', $values['volunteer_match_create_connection_endpoint_environment'] );
 
 	$interests = array();
 	if ( isset( $values['volunteer_match_interests'] ) ) {
@@ -74,10 +74,25 @@ function volunteer_match_save_options( $values = array() ) {
 		}
 	}
 	update_option( 'volunteer_match_interests', $interests );
-	update_option( 'volunteer_match_radius', explode( ',', $values['volunteer_match_radius']) );
+
+	$age_groupings = array();
+	if ( isset( $values['volunteer_match_great_for'] ) ) {
+		$great_fors = $values['volunteer_match_great_for'];
+		$age_groups = $values['volunteer_match_great_for_age_groups'];
+		foreach ( $great_fors as $i => $great_for ) {
+			$groups         = array_shift( $age_groups );
+			$age_groupings[] = array(
+				'age_groups'  => implode( ',', $groups ),
+				'title' => $great_for,
+			);
+		}
+	}
+	update_option( 'volunteer_match_great_for', $age_groupings );
+
+	update_option( 'volunteer_match_radius', explode( ',', $values['volunteer_match_radius'] ) );
 
 	$volunteer_match_bootstrap_support = isset( $values['volunteer_match_bootstrap_support'] ) ? true : false;
-	update_option('volunteer_match_bootstrap_support', $volunteer_match_bootstrap_support);
+	update_option( 'volunteer_match_bootstrap_support', $volunteer_match_bootstrap_support );
 
 	print '<div class="updated notice is-dismissible"><p><strong>Volunteer Match Settings</strong> have been updated.</p><button type="button" class="notice-dismiss"><span class="screen-reader-text">Dismiss this notice.</span></button></div>';
 }
@@ -121,4 +136,37 @@ function volunteer_match_categories() {
 	);
 
 	return $cats;
+}
+
+/**
+ * Return array of field labels from WPForms with fields that have the great-for css in their class
+ *
+ * @return array
+ */
+function volunteer_match_wpforms_age_groups() {
+	if ( ! function_exists( 'wpforms' ) ) {
+		return array();
+	}
+
+	$forms = wpforms()->form->get();
+	$tmp   = array();
+
+	foreach ( $forms as $f => $obj ) {
+		$obj_decoded = wpforms_decode( $obj->post_content );
+		$fields      = isset( $obj_decoded['fields'] ) ? $obj_decoded['fields'] : array();
+
+		foreach ( $fields as $i => $field ) {
+			if ( ! empty( $field['css'] ) &&
+			false !== strpos( $field['css'], 'great-for' ) &&
+			isset( $field['choices'] ) && ! empty( $field['choices'] ) ) {
+				foreach ( $field['choices'] as $c => $choice ) {
+					if( ! in_array( $choice['label'], $tmp ) ){
+						array_push( $tmp, $choice['label'] );
+					}
+				}
+			}
+		}
+	}
+
+	return $tmp;
 }
