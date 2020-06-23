@@ -48,7 +48,7 @@ jQuery(document).ready(function(){
 
 		// Form Params
 		var firstName, lastName, email, phoneNumber, zip, acceptTerms = {};
-		var oppID, oppTitle, oppLocation, oppIsCovid19, parentOrgID, parentName, interests, categories, container, great_for = {};
+		var oppID, oppTitle, oppLocation, oppIsCovid19, parentOrgID, parentName, interests, categories, container = {};
 
 		if( forms_id.length ){
 			associated_form = $( `#${forms_id.val()}` );
@@ -68,17 +68,7 @@ jQuery(document).ready(function(){
 			interests = associated_form.find('.interests input');
 			categories = associated_form.find('.categories input');
 			container = associated_form.find(' .container input');
-			great_for = associated_form.find(' .great-for input');
 
-			if( great_for.length && volunteer_match_args.age_groups.length ){
-				great_for.each(function(i, val){
-					volunteer_match_args.age_groups.forEach(function(age, a){
-						if( $(val).val() === age.title ){
-							$(val).addClass(age.age_groups);
-						}
-					});
-				});
-			}
 		}
 
 		if ( associated_form.length ){
@@ -161,10 +151,6 @@ jQuery(document).ready(function(){
 	
 				var fd = new FormData( volunteer_match_form.get(0) );
 				fd.append("action", "volunteer_match_return_opportunities");
-	
-				if( great_for.length ){
-					fd.append( 'volunteer_match_great_for', associated_form.find('.great-for input:checked').attr('class') );
-				}
 
 				jQuery.ajax({
 					type: 'POST',
