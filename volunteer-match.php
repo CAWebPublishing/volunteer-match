@@ -4,7 +4,7 @@
  * Plugin URI: "https://github.com/Danny-Guzman/volunteer-match/"
  * Description: Adds a shortcode that display a VolunteerMatch.org search dashboard and opportunities results.
  * Author: Danny Guzman
- * Version: 1.1.1
+ * Version: 1.1.2
  * Author URI: "https://github.com/Danny-Guzman/"
  *
  * @package VolunteerMatch
@@ -65,7 +65,7 @@ function volunteer_match_wp_enqueue_scripts() {
 	// Enqueue Scripts.
 	wp_register_script( 'volunteer-match-core-script', $frontend_js, array(), $version, true );
 
-	wp_localize_script( 'volunteer-match-core-script', 'volunteer_match_args', array( 'ajaxurl' => admin_url( 'admin-ajax.php' ), 'age_groups' => get_option('volunteer_match_great_for', array()) ) );
+	wp_localize_script( 'volunteer-match-core-script', 'volunteer_match_args', array( 'ajaxurl' => admin_url( 'admin-ajax.php' ) ) );
 
 	if( $volunteer_match_bootstrap_support ){
 		$bootstrap_js  = volunteer_match_get_min_file( 'js/bootstrap.js' );
@@ -101,7 +101,7 @@ function volunteer_match_admin_enqueue_scripts( $hook ) {
 
 		wp_register_script( 'volunteer-match-admin-scripts', $admin_js, array( 'jquery' ), $version, true );
 
-		wp_localize_script( 'volunteer-match-admin-scripts', 'volunteer_match_args', array( 'categories' => volunteer_match_categories(), 'age_groups' => volunteer_match_wpforms_age_groups() ) );
+		wp_localize_script( 'volunteer-match-admin-scripts', 'volunteer_match_args', array( 'categories' => volunteer_match_categories() ) );
 
 		wp_enqueue_script( 'volunteer-match-admin-scripts' );
 

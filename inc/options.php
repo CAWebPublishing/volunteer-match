@@ -75,20 +75,6 @@ function volunteer_match_save_options( $values = array() ) {
 	}
 	update_option( 'volunteer_match_interests', $interests );
 
-	$age_groupings = array();
-	if ( isset( $values['volunteer_match_great_for'] ) ) {
-		$great_fors = $values['volunteer_match_great_for'];
-		$age_groups = $values['volunteer_match_great_for_age_groups'];
-		foreach ( $great_fors as $i => $great_for ) {
-			$groups         = array_shift( $age_groups );
-			$age_groupings[] = array(
-				'age_groups'  => implode( ',', $groups ),
-				'title' => $great_for,
-			);
-		}
-	}
-	update_option( 'volunteer_match_great_for', $age_groupings );
-
 	update_option( 'volunteer_match_radius', explode( ',', $values['volunteer_match_radius'] ) );
 
 	$volunteer_match_bootstrap_support = isset( $values['volunteer_match_bootstrap_support'] ) ? true : false;
@@ -136,37 +122,4 @@ function volunteer_match_categories() {
 	);
 
 	return $cats;
-}
-
-/**
- * Return array of field labels from WPForms with fields that have the great-for css in their class
- *
- * @return array
- */
-function volunteer_match_wpforms_age_groups() {
-	if ( ! function_exists( 'wpforms' ) ) {
-		return array();
-	}
-
-	$forms = wpforms()->form->get();
-	$tmp   = array();
-
-	foreach ( $forms as $f => $obj ) {
-		$obj_decoded = wpforms_decode( $obj->post_content );
-		$fields      = isset( $obj_decoded['fields'] ) ? $obj_decoded['fields'] : array();
-
-		foreach ( $fields as $i => $field ) {
-			if ( ! empty( $field['css'] ) &&
-			false !== strpos( $field['css'], 'great-for' ) &&
-			isset( $field['choices'] ) && ! empty( $field['choices'] ) ) {
-				foreach ( $field['choices'] as $c => $choice ) {
-					if( ! in_array( $choice['label'], $tmp ) ){
-						array_push( $tmp, $choice['label'] );
-					}
-				}
-			}
-		}
-	}
-
-	return $tmp;
 }
