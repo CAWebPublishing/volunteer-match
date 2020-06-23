@@ -234,19 +234,23 @@ function volunteer_match_search_options( $attr ) {
 	</div>';
 
 	$interests = volunteer_match_interest_menu( $attr );
-	$col2      = sprintf( '<div class="col">%1$s%2$s</div>', $covid, $interests );
+
+	$col2      = sprintf( '<div class="mx-4">%1$s%2$s</div>', $covid, $interests );
 
 	$radius = volunteer_match_radius_options( $attr );
+	$great_for = volunteer_match_great_for_menu( $attr );
 
 	$col3 = sprintf(
 		'
 	<div class="col">
 		<label>Radius %1$s miles</label>
 		<button id="volunteer-match-search" class="float-right btn btn-primary%2$s"%3$s>Search</button>
+		%4$s
 	</div>',
 		$radius,
 		$button_size,
-		$button_style
+		$button_style, 
+		$great_for
 	);
 
 	return sprintf( '<div class="form-row">%1$s%2$s%3$s</div>', $col1, $col2, $col3 );
@@ -312,8 +316,8 @@ function volunteer_match_interest_menu( $attr ) {
 
 	foreach ( $interests as $i => $data ) {
 		$menu .= sprintf(
-			'<div class="%1$s">
-				<label for="interest-%2$s">
+			'<div>
+				<label class="%1$s" for="interest-%2$s">
 					<input id="interest-%2$s" type="checkbox" name="volunteer_match_interests[]" value="%3$s" title="%4$s"> %4$s
 				</label>
 			</div>',
@@ -351,6 +355,70 @@ function volunteer_match_interest_menu( $attr ) {
 	}
 
 	return sprintf( '<div><strong>I am interested in...</strong>%1$s</div>', $menu );
+
+}
+
+/**
+ * Adds VolunteerMatch Great For Menu
+
+ * @param  array $attr Attributes for this shortcode.
+ *               $attr['greatfor'] Whether the Good For menu should be compacted or full, default is compact.
+ *               $attr['greatfor'] = compact, shows a button with a menu of Good For choices.
+ *               $attr['greatfor'] = full, shows all Good For choices on front display.
+ *               $attr['button_color'] Button background color.
+ *               $attr['button_font_color'] Button text color.
+ *               $attr['button_size'] Button size, default md. Options sm, md, lg.
+ *
+ * @return string
+ */
+function volunteer_match_great_for_menu( $attr ) {
+	$compact   = isset( $attr['greatfor'] ) && 'full' === $attr['greatfor'] ? false : true;
+	$age_groups = array('groups', 'kids', 'seniors', 'teens');
+	
+	$menu = '';
+
+	$check_class = $compact ? 'col' : 'form-check pl-0';
+
+	foreach ( $age_groups as $i => $group ) {
+		$menu .= sprintf(
+			'<div>
+				<label class="%1$s" for="great-for-%2$s">
+					<input id="great-for-%2$s" type="checkbox" name="volunteer_match_great_for[]" value="%2$s" title="%3$s"> %3$s
+				</label>
+			</div>',
+			$check_class,
+			$group,
+			ucfirst( $group )
+		);
+	}
+
+	if ( $compact ) {
+		$button_color      = isset( $attr['button_color'] ) ? sprintf( ' background-color:%1$s;', $attr['button_color'] ) : '';
+		$button_font_color = isset( $attr['button_font_color'] ) ? sprintf( ' color:%2$s;', $attr['button_font_color'] ) : '';
+		$button_style      = ! empty( $button_color ) || ! empty( $button_font_color ) ? sprintf( ' style="%1$s%2$s"', $button_color, $button_font_color ) : '';
+		$button_size       = isset( $attr['button_size'] ) ? sprintf( ' btn-%1$s', $attr['button_size'] ) : ' btn-md';
+
+		return sprintf(
+			'<div class="dropdown" role="group" aria-label="Good For menu">
+				<button 
+					class="btn btn-primary dropdown-toggle%1$s" 
+					id="volunteer-match-great-for-button" 
+					data-toggle="dropdown" 
+					aria-haspopup="true" 
+					aria-expanded="false"%2$s>Good For...
+				</button>
+				<div class="dropdown-menu" aria-labelledby="volunteer-match-great-for-button">
+				%3$s
+				</div>
+			</div>',
+			$button_size,
+			$button_style,
+			$menu
+		);
+
+	}
+
+	return sprintf( '<div><strong>Good For...</strong>%1$s</div>', $menu );
 
 }
 
