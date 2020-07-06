@@ -80,31 +80,31 @@ function volunteer_match_func( $attr ) {
 /**
  * Adds hidden inputs to the VolunteerMatch Search Form
  *
+ * @param  array  $attr Attributes for the shortcode.
+ *                $attr['hidden'] Whether or not to hide the Dashboard, default is false.
+ *                $attr['id'] ID to a form connected to the dashboard.
+ *                $attr['wpforms'] WPForms ID for the form connected to the dashboard, if $attr['id'] is set then $attr['id'] is used instead.
+ *                $attr['landing_page'] Page associated with the VolunteerMatch Opportunity shortcode.
+ *                $attr['notify'] Notify when form is submitted, default if false.
+ *                $attr['button_color'] Button background color.
+ *                $attr['button_failed_color'] Button background color when signup failed.
+ *                $attr['button_font_color'] Button text color.
+ *                $attr['button_size'] Button size, default md. Options sm, md, lg.
+ *                $attr['button_text'] Sign Up button text, default 'Sign Up'.
+ *                $attr['button_failed_text'] Sign Up button text when connection fails, default 'Failed'.
+ *                $attr['button_connection_text'] Sign Up button text when connection succeeds, default 'Connected'.
+ *                $attr['button_connection_exist_text'] Sign Up button text when connection alreadt exists, default 'Connection Exists'.
+ *                $attr['link_color'] Link text color.
+ *                $attr['location'] Whether or not to show opportunity location, default is true.
+ *                $attr['description'] Whether or not to show opportunity descriptions, default is true.
+ *                $attr['description_type'] Whether or not to show opportunity descriptions in HTML or plaintext format, default is HTML.
+ *                $attr['description_expanded_icon'] WordPress Dashicon when description is expanded, default 'arrow-down-alt2'.
+ *                $attr['description_collapsed_icon'] WordPress Dashicon when description is collapsed, default 'arrow-up-alt2'.
+ *                $attr['date'] Whether or not to show opportunity date, default is true.
+ *                $attr['title'] Whether or not to show opportunity title, default is true.
+ *                $attr['parent_org'] Whether or not to show opportunity parent organization, default is true.
+ *                $attr['mission'] Whether or not to show opportunity parent organization mission, default is true.
  * @param  string $nonce Form nonce value.
- * @param  array $attr Attributes for the shortcode.
- *               $attr['hidden'] Whether or not to hide the Dashboard, default is false.
- *               $attr['id'] ID to a form connected to the dashboard.
- *               $attr['wpforms'] WPForms ID for the form connected to the dashboard, if $attr['id'] is set then $attr['id'] is used instead.
- *               $attr['landing_page'] Page associated with the VolunteerMatch Opportunity shortcode.
- *               $attr['notify'] Notify when form is submitted, default if false.
- *               $attr['button_color'] Button background color.
- *               $attr['button_failed_color'] Button background color when signup failed.
- *               $attr['button_font_color'] Button text color.
- *               $attr['button_size'] Button size, default md. Options sm, md, lg.
- *               $attr['button_text'] Sign Up button text, default 'Sign Up'.
- *               $attr['button_failed_text'] Sign Up button text when connection fails, default 'Failed'.
- *               $attr['button_connection_text'] Sign Up button text when connection succeeds, default 'Connected'.
- *               $attr['button_connection_exist_text'] Sign Up button text when connection alreadt exists, default 'Connection Exists'.
- *               $attr['link_color'] Link text color.
- *               $attr['location'] Whether or not to show opportunity location, default is true.
- *               $attr['description'] Whether or not to show opportunity descriptions, default is true.
- *               $attr['description_type'] Whether or not to show opportunity descriptions in HTML or plaintext format, default is HTML.
- *               $attr['description_expanded_icon'] WordPress Dashicon when description is expanded, default 'arrow-down-alt2'.
- *               $attr['description_collapsed_icon'] WordPress Dashicon when description is collapsed, default 'arrow-up-alt2'.
- *               $attr['date'] Whether or not to show opportunity date, default is true.
- *               $attr['title'] Whether or not to show opportunity title, default is true.
- *               $attr['parent_org'] Whether or not to show opportunity parent organization, default is true.
- *               $attr['mission'] Whether or not to show opportunity parent organization mission, default is true.
  * @return string
  */
 function volunteer_match_extra_inputs( $attr, $nonce ) {
@@ -139,8 +139,8 @@ function volunteer_match_extra_inputs( $attr, $nonce ) {
 	$description_collapsed_icon = sprintf( '<input type="hidden" name="volunteer_match_description_collapsed_icon" value="%1$s">', isset( $attr['description_collapsed_icon'] ) ? $attr['description_collapsed_icon'] : 'arrow-down-alt2' );
 
 	$response_page = '<input type="hidden" value="1" name="volunteer_match_response_page">';
-	$landing_page = isset( $attr['landing_page'] ) ? sprintf( '<input type="hidden" value="%1$s" name="volunteer_match_landing_page">', $attr['landing_page'] ) : '';
-	
+	$landing_page  = isset( $attr['landing_page'] ) ? sprintf( '<input type="hidden" value="%1$s" name="volunteer_match_landing_page">', $attr['landing_page'] ) : '';
+
 	return "$nonce" .
 			"$notify" .
 			"$hidden" .
@@ -194,11 +194,11 @@ function volunteer_match_search_row( $attr ) {
 /**
  * Adds VolunteerMatch Search Options
  *
+ * @param  array  $attr Attributes for the shortcode.
+ *                $attr['button_color'] Button background color.
+ *                $attr['button_size'] Button size, default md. Options sm, md, lg.
+ *                $attr['button_font_color'] Button text color.
  * @param  string $nonce Form nonce value.
- * @param  array $attr Attributes for the shortcode.
- *               $attr['button_color'] Button background color.
- *               $attr['button_size'] Button size, default md. Options sm, md, lg.
- *               $attr['button_font_color'] Button text color.
  * @return string
  */
 function volunteer_match_search_options( $attr, $nonce ) {
@@ -237,9 +237,9 @@ function volunteer_match_search_options( $attr, $nonce ) {
 
 	$interests = volunteer_match_interest_menu( $attr );
 
-	$col2      = sprintf( '<div class="mx-4">%1$s%2$s</div>', $covid, $interests );
+	$col2 = sprintf( '<div class="mx-4">%1$s%2$s</div>', $covid, $interests );
 
-	$radius = volunteer_match_radius_options( $attr );
+	$radius    = volunteer_match_radius_options( $attr );
 	$great_for = volunteer_match_great_for_menu( $attr, $nonce );
 
 	$col3 = sprintf(
@@ -251,7 +251,7 @@ function volunteer_match_search_options( $attr, $nonce ) {
 	</div>',
 		$radius,
 		$button_size,
-		$button_style, 
+		$button_style,
 		$great_for
 	);
 
@@ -362,22 +362,22 @@ function volunteer_match_interest_menu( $attr ) {
 
 /**
  * Adds VolunteerMatch Great For Menu
-
+ *
+ * @param  array  $attr Attributes for this shortcode.
+ *                $attr['greatfor'] Whether the Good For menu should be compacted or full, default is compact.
+ *                $attr['greatfor'] = compact, shows a button with a menu of Good For choices.
+ *                $attr['greatfor'] = full, shows all Good For choices on front display.
+ *                $attr['button_color'] Button background color.
+ *                $attr['button_font_color'] Button text color.
+ *                $attr['button_size'] Button size, default md. Options sm, md, lg.
  * @param  string $nonce Form nonce value.
- * @param  array $attr Attributes for this shortcode.
- *               $attr['greatfor'] Whether the Good For menu should be compacted or full, default is compact.
- *               $attr['greatfor'] = compact, shows a button with a menu of Good For choices.
- *               $attr['greatfor'] = full, shows all Good For choices on front display.
- *               $attr['button_color'] Button background color.
- *               $attr['button_font_color'] Button text color.
- *               $attr['button_size'] Button size, default md. Options sm, md, lg.
  *
  * @return string
  */
 function volunteer_match_great_for_menu( $attr, $nonce ) {
-	$compact   = isset( $attr['greatfor'] ) && 'full' === $attr['greatfor'] ? false : true;
-	$age_groups = array('groups', 'kids', 'seniors', 'teens');
-	
+	$compact    = isset( $attr['greatfor'] ) && 'full' === $attr['greatfor'] ? false : true;
+	$age_groups = array( 'groups', 'kids', 'seniors', 'teens' );
+
 	$menu = '';
 
 	$check_class = $compact ? 'col' : 'form-check pl-0';
@@ -388,8 +388,8 @@ function volunteer_match_great_for_menu( $attr, $nonce ) {
 	$default_great_fors = explode( ',', $default_great_fors );
 
 	foreach ( $age_groups as $i => $group ) {
-		$checked = in_array($group, $default_great_fors, true ) ? ' checked' : '';
-		$menu .= sprintf(
+		$checked = in_array( $group, $default_great_fors, true ) ? ' checked' : '';
+		$menu   .= sprintf(
 			'<div>
 				<label class="%1$s" for="great-for-%2$s">
 					<input id="great-for-%2$s" type="checkbox" name="volunteer_match_great_for[]" value="%2$s" title="%3$s"%4$s> %3$s
@@ -484,7 +484,7 @@ function volunteer_match_opportunity_func( $attr ) {
 	$forms_id = empty( $id ) && isset( $attr['wpforms'] ) ? sprintf( ' data-target="wpforms-form-%1$s"', $attr['wpforms'] ) : '';
 
 	$opportunity = isset( $_GET['volunteer_opp_id'] ) ? sanitize_text_field( wp_unslash( $_GET['volunteer_opp_id'] ) ) : '';
-	$opportunity = empty($opportunity) && isset( $attr['opp_id'] ) ? $attr['opp_id'] : $opportunity;
+	$opportunity = empty( $opportunity ) && isset( $attr['opp_id'] ) ? $attr['opp_id'] : $opportunity;
 
 	$opportunity = volunteer_match_return_opportunities( array( 'ids' => $opportunity ) );
 	$opportunity = is_string( $opportunity ) ? json_decode( $opportunity, true ) : '';
@@ -510,7 +510,7 @@ function volunteer_match_opportunity_func( $attr ) {
  */
 function volunteer_match_display_opportunity( $opportunity, $attr ) {
 	if ( isset( $opportunity['resultsSize'] ) && $opportunity['resultsSize'] && isset( $opportunity['opportunities'][0] ) ) {
-		$opp      = $opportunity['opportunities'][0];
+		$opp = $opportunity['opportunities'][0];
 
 		$title       = sprintf( '<p class="h3 m-0 opportunity-title">%1$s</p>', $opp['title'] );
 		$parent_name = sprintf( '<p class="opportunity-parentOrg-name">%1$s</p>', $opp['parentOrg']['name'] );
@@ -533,23 +533,23 @@ function volunteer_match_display_opportunity( $opportunity, $attr ) {
 
 		// greatFor.
 		$great_for = volunteer_match_opportunity_great_for( $opp, $attr );
-		
+
 		$hidden_fields = volunteer_match_opportunity_hidden_fields( $opp, $attr );
 
 		$col1_class = 'col-lg-12';
-		$col2 = "";
+		$col2       = '';
 
-		if( ! empty($when) || 
-			! empty($where) || 
-			! empty($skills) || 
-			! empty($great_for) ){
-			$col1_class =  'col-lg-9';
-			$col2 = sprintf( '<div class="col-lg-3">%1$s%2$s%3$s%4$s</div>', $when, $where, $skills, $great_for );
+		if ( ! empty( $when ) ||
+			! empty( $where ) ||
+			! empty( $skills ) ||
+			! empty( $great_for ) ) {
+			$col1_class = 'col-lg-9';
+			$col2       = sprintf( '<div class="col-lg-3">%1$s%2$s%3$s%4$s</div>', $when, $where, $skills, $great_for );
 		}
 
 		$col1 = sprintf( '<div class="%1$s">%2$s%3$s%4$s</div>', $col1_class, $header, $description, $hidden_fields );
 
-		return "$col1$col2" ;
+		return "$col1$col2";
 	}
 
 	return 'No opportunity matched the requested ID.';
@@ -558,35 +558,35 @@ function volunteer_match_display_opportunity( $opportunity, $attr ) {
 /**
  * Add VolunteerMatch Opportunity hidden fields
  *
- * @param  object $opportunity Opportunity Object.
- * @param  array $attr Attributes for this shortcode.
- *               $attr['notify'] Notify when form is submitted, default if false.
- * 
+ * @param  object $opp Opportunity Object.
+ * @param  array  $attr Attributes for this shortcode.
+ *                $attr['notify'] Notify when form is submitted, default if false.
+ *
  * @return string
  */
-function volunteer_match_opportunity_hidden_fields( $opp, $attr ){
+function volunteer_match_opportunity_hidden_fields( $opp, $attr ) {
 	$location = $opp['location'];
 
-	// id
-	$id = sprintf('<input type="hidden" name="volunteer_match_opp_id" value="%1$s">', $opp['id'] );
+	// id.
+	$id = sprintf( '<input type="hidden" name="volunteer_match_opp_id" value="%1$s">', $opp['id'] );
 
-	// title
-	$opp_title = sprintf('<input type="hidden" name="volunteer_match_opp_title" value="%1$s">', $opp['title'] );
+	// title.
+	$opp_title = sprintf( '<input type="hidden" name="volunteer_match_opp_title" value="%1$s">', $opp['title'] );
 
-	// is_covid
+	// is_covid.
 	$is_covid = ! empty( $opp['specialFlag'] ) && in_array( 'covid19', $opp['specialFlag'] ) ? 'true' : 'false';
-	$is_covid = sprintf('<input type="hidden" name="volunteer_match_opp_is_covid" value="%1$s">', $is_covid );
+	$is_covid = sprintf( '<input type="hidden" name="volunteer_match_opp_is_covid" value="%1$s">', $is_covid );
 
-	// parentOrgId
-	$parent_org_id = sprintf('<input type="hidden" name="volunteer_match_opp_parent_org_id" value="%1$s">', $opp['parentOrg']['id'] );
-	
-	// parentName
-	$parent_name = sprintf('<input type="hidden" name="volunteer_match_opp_parent_org_name" value="%1$s">', $opp['parentOrg']['name'] );
+	// parentOrgId.
+	$parent_org_id = sprintf( '<input type="hidden" name="volunteer_match_opp_parent_org_id" value="%1$s">', $opp['parentOrg']['id'] );
 
-	// location
+	// parentName.
+	$parent_name = sprintf( '<input type="hidden" name="volunteer_match_opp_parent_org_name" value="%1$s">', $opp['parentOrg']['name'] );
+
+	// location.
 	$opp_location = '';
 
-	if( ! $location['virtual'] ){
+	if ( ! $location['virtual'] ) {
 		$opp_location = array_filter(
 			array(
 				$location['street1'],
@@ -597,38 +597,37 @@ function volunteer_match_opportunity_hidden_fields( $opp, $attr ){
 			)
 		);
 
-		$opp_location = implode(',', $opp_location);
+		$opp_location = implode( ',', $opp_location );
 	}
-	
-	$opp_location = sprintf('<input type="hidden" name="volunteer_match_opp_location" value="%1$s">', $opp_location );
 
-	// container
-	$container = sprintf('<input type="hidden" name="volunteer_match_opp_container" value="%1$s">', $opp['container'] );
+	$opp_location = sprintf( '<input type="hidden" name="volunteer_match_opp_location" value="%1$s">', $opp_location );
 
-	// categories & interests
+	// container.
+	$container = sprintf( '<input type="hidden" name="volunteer_match_opp_container" value="%1$s">', $opp['container'] );
+
+	// categories & interests.
 	$categories = isset( $opp['categories'] ) && ! empty( $opp['categories'] ) ? $opp['categories'] : '';
-	$ints = get_option( 'volunteer_match_interests', array() );
-	$interests = array();
+	$ints       = get_option( 'volunteer_match_interests', array() );
+	$interests  = array();
 
-	if( ! empty($categories) ){
-		foreach( $ints as $i => $data ){
-			$cats = explode( ',', $data['cats'] );
+	if ( ! empty( $categories ) ) {
+		foreach ( $ints as $i => $data ) {
+			$cats  = explode( ',', $data['cats'] );
 			$title = $data['title'];
 
-			foreach( $cats as $c => $cat ){
-				if( in_array( $cat, $categories ) ){
+			foreach ( $cats as $c => $cat ) {
+				if ( in_array( $cat, $categories ) ) {
 					$interests[] = $title;
 					break;
 				}
 			}
 		}
-
 	}
 
-	$categories = sprintf('<input type="hidden" name="volunteer_match_opp_categories" value="%1$s">', implode( ',', $categories ) );
-	$interests = sprintf('<input type="hidden" name="volunteer_match_opp_interests" value="%1$s">', implode( ',', $interests ) );
+	$categories = sprintf( '<input type="hidden" name="volunteer_match_opp_categories" value="%1$s">', implode( ',', $categories ) );
+	$interests  = sprintf( '<input type="hidden" name="volunteer_match_opp_interests" value="%1$s">', implode( ',', $interests ) );
 
-	// notify 
+	// notify.
 	$notify = isset( $attr['notify'] ) && 'true' === $attr['notify'] ? sprintf( '<input type="hidden" name="volunteer_match_opp_show_notify" value="true">', $attr['notify'] ) : '';
 
 	return "$id$opp_title$is_covid$parent_org_id$parent_name$opp_location$categories$interests$container$notify";
@@ -637,16 +636,16 @@ function volunteer_match_opportunity_hidden_fields( $opp, $attr ){
 /**
  * Display an opportunities location property
  *
- * @param  object $opportunity Opportunity Object.
+ * @param  object $opp Opportunity Object.
  * @param  array  $attr Attributes for the shortcode.
  *               $attr['show_where'] Whether or not to show opportunity location, default is true.
  * @return string
  */
-function volunteer_match_opportunity_location( $opp, $attr ){
-	$l = "";
-	if (! isset($attr['show_where']) || "false" !== $attr['show_where']) {
+function volunteer_match_opportunity_location( $opp, $attr ) {
+	$l = '';
+	if ( ! isset( $attr['show_where'] ) || 'false' !== $attr['show_where'] ) {
 		$location = $opp['location'];
-		
+
 		if ( $location['virtual'] ) {
 			$location = '<p>Virtual</p>';
 		} else {
@@ -671,14 +670,14 @@ function volunteer_match_opportunity_location( $opp, $attr ){
 /**
  * Display an opportunities dates property
  *
- * @param  object $opportunity Opportunity Object.
+ * @param  object $opp Opportunity Object.
  * @param  array  $attr Attributes for the shortcode.
  *               $attr['show_when'] Whether or not to show opportunity date, default is true.
  * @return string
  */
-function volunteer_match_opportunity_dates( $opp, $attr ){
-	$when = "";
-	if (! isset($attr['show_when']) || "false" !== $attr['show_when']) {
+function volunteer_match_opportunity_dates( $opp, $attr ) {
+	$when = '';
+	if ( ! isset( $attr['show_when'] ) || 'false' !== $attr['show_when'] ) {
 		if ( ! $opp['dateRange']['ongoing'] ) {
 
 			$sdate = ! empty( $opp['dateRange']['startDate'] ) ? gmdate( 'M j, Y', strtotime( $opp['dateRange']['startDate'] ) ) : '';
@@ -701,8 +700,8 @@ function volunteer_match_opportunity_dates( $opp, $attr ){
 		} else {
 			$date = 'Ongoing';
 		}
-		
-		$when = sprintf('<div class="opportunity-date mt-2"><p class="h4 m-0">When</p>%1$s</div>', $date);
+
+		$when = sprintf( '<div class="opportunity-date mt-2"><p class="h4 m-0">When</p>%1$s</div>', $date );
 	}
 	return $when;
 }
@@ -710,33 +709,33 @@ function volunteer_match_opportunity_dates( $opp, $attr ){
 /**
  * Display an opportunities skills property
  *
- * @param  object $opportunity Opportunity Object.
+ * @param  object $opp Opportunity Object.
  * @param  array  $attr Attributes for the shortcode.
  *               $attr['show_skills'] Whether or not to show opportunity skills, default is true.
  * @return string
  */
-function volunteer_match_opportunity_skills( $opp, $attr ){
-	$s = "";
-    if (! isset($attr['show_skills']) || "false" !== $attr['show_skills']) {
-        $s = ! empty($opp['skillsNeeded']) ? implode(', ', explode(';', $opp['skillsNeeded'])) : "None";
-        $s = sprintf('<div class="opportunity-skills mt-2"><p class="h4 m-0">Skills</p><p>%1$s</p></div>', $s);
-    }
+function volunteer_match_opportunity_skills( $opp, $attr ) {
+	$s = '';
+	if ( ! isset( $attr['show_skills'] ) || 'false' !== $attr['show_skills'] ) {
+		$s = ! empty( $opp['skillsNeeded'] ) ? implode( ', ', explode( ';', $opp['skillsNeeded'] ) ) : 'None';
+		$s = sprintf( '<div class="opportunity-skills mt-2"><p class="h4 m-0">Skills</p><p>%1$s</p></div>', $s );
+	}
 	return $s;
 }
 
 /**
  * Display an opportunities greatFor property
  *
- * @param  object $opportunity Opportunity Object.
+ * @param  object $opp Opportunity Object.
  * @param  array  $attr Attributes for the shortcode.
  *               $attr['show_great_for'] Whether or not to show opportunity great for, default is true.
  * @return string
  */
-function volunteer_match_opportunity_great_for( $opp, $attr ){
-	$g = "";
-	if (! isset($attr['show_great_for']) || "false" !== $attr['show_great_for']) {
-        $g = ! empty($opp['greatFor']) ? implode(', ', array_map('ucfirst', $opp['greatFor'])) : '';
-        $g = ! empty($g) ? sprintf('<div class="opportunity-great-for mt-2"><p class="h4 m-0">Great For</p><p>%1$s</p></div>', $g) : '';
-    }
+function volunteer_match_opportunity_great_for( $opp, $attr ) {
+	$g = '';
+	if ( ! isset( $attr['show_great_for'] ) || 'false' !== $attr['show_great_for'] ) {
+		$g = ! empty( $opp['greatFor'] ) ? implode( ', ', array_map( 'ucfirst', $opp['greatFor'] ) ) : '';
+		$g = ! empty( $g ) ? sprintf( '<div class="opportunity-great-for mt-2"><p class="h4 m-0">Great For</p><p>%1$s</p></div>', $g ) : '';
+	}
 	return $g;
 }
