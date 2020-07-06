@@ -48,6 +48,7 @@ add_shortcode( 'volunteer_match_opportunity', 'volunteer_match_opportunity_func'
  * @return string
  */
 function volunteer_match_func( $attr ) {
+	$nonce = wp_create_nonce( 'volunteer_match_search_opportunities' );
 
 	$hidden      = isset( $attr['hidden'] ) && 'true' === $attr['hidden'] ? ' hidden' : '';
 	$font_family = isset( $attr['font'] ) ? sprintf( 'font-family:%1$s;', $attr['font'] ) : '';
@@ -57,9 +58,9 @@ function volunteer_match_func( $attr ) {
 
 	$search_row = volunteer_match_search_row( $attr );
 
-	$search_options = volunteer_match_search_options( $attr );
+	$search_options = volunteer_match_search_options( $attr, $nonce );
 
-	$search_extras = volunteer_match_extra_inputs( $attr );
+	$search_extras = volunteer_match_extra_inputs( $attr, $nonce );
 
 	$search_results = volunteer_match_search_results( $attr );
 
@@ -79,6 +80,7 @@ function volunteer_match_func( $attr ) {
 /**
  * Adds hidden inputs to the VolunteerMatch Search Form
  *
+ * @param  string $nonce Form nonce value.
  * @param  array $attr Attributes for the shortcode.
  *               $attr['hidden'] Whether or not to hide the Dashboard, default is false.
  *               $attr['id'] ID to a form connected to the dashboard.
@@ -105,8 +107,7 @@ function volunteer_match_func( $attr ) {
  *               $attr['mission'] Whether or not to show opportunity parent organization mission, default is true.
  * @return string
  */
-function volunteer_match_extra_inputs( $attr ) {
-	$nonce = wp_create_nonce( 'volunteer_match_search_opportunities' );
+function volunteer_match_extra_inputs( $attr, $nonce ) {
 	$nonce = sprintf( '<input type="hidden" name="volunteer_match_search_opportunities_nonce" value="%1$s">', $nonce );
 
 	$hidden = isset( $attr['hidden'] ) ? sprintf( '<input type="hidden" name="volunteer_match_hidden" value="%1$s">', $attr['hidden'] ) : '';
@@ -193,13 +194,14 @@ function volunteer_match_search_row( $attr ) {
 /**
  * Adds VolunteerMatch Search Options
  *
+ * @param  string $nonce Form nonce value.
  * @param  array $attr Attributes for the shortcode.
  *               $attr['button_color'] Button background color.
  *               $attr['button_size'] Button size, default md. Options sm, md, lg.
  *               $attr['button_font_color'] Button text color.
  * @return string
  */
-function volunteer_match_search_options( $attr ) {
+function volunteer_match_search_options( $attr, $nonce ) {
 	$button_color      = isset( $attr['button_color'] ) ? sprintf( ' background-color:%1$s;', $attr['button_color'] ) : '';
 	$button_font_color = isset( $attr['button_font_color'] ) ? sprintf( ' color:%2$s;', $attr['button_font_color'] ) : '';
 	$button_style      = ! empty( $button_color ) || ! empty( $button_font_color ) ? sprintf( ' style="%1$s%2$s"', $button_color, $button_font_color ) : '';
@@ -238,7 +240,7 @@ function volunteer_match_search_options( $attr ) {
 	$col2      = sprintf( '<div class="mx-4">%1$s%2$s</div>', $covid, $interests );
 
 	$radius = volunteer_match_radius_options( $attr );
-	$great_for = volunteer_match_great_for_menu( $attr );
+	$great_for = volunteer_match_great_for_menu( $attr, $nonce );
 
 	$col3 = sprintf(
 		'
@@ -361,6 +363,7 @@ function volunteer_match_interest_menu( $attr ) {
 /**
  * Adds VolunteerMatch Great For Menu
 
+ * @param  string $nonce Form nonce value.
  * @param  array $attr Attributes for this shortcode.
  *               $attr['greatfor'] Whether the Good For menu should be compacted or full, default is compact.
  *               $attr['greatfor'] = compact, shows a button with a menu of Good For choices.
@@ -371,7 +374,7 @@ function volunteer_match_interest_menu( $attr ) {
  *
  * @return string
  */
-function volunteer_match_great_for_menu( $attr ) {
+function volunteer_match_great_for_menu( $attr, $nonce ) {
 	$compact   = isset( $attr['greatfor'] ) && 'full' === $attr['greatfor'] ? false : true;
 	$age_groups = array('groups', 'kids', 'seniors', 'teens');
 	
@@ -379,16 +382,23 @@ function volunteer_match_great_for_menu( $attr ) {
 
 	$check_class = $compact ? 'col' : 'form-check pl-0';
 
+	$verified = wp_verify_nonce( $nonce, 'volunteer_match_search_opportunities' );
+
+	$default_great_fors = isset( $_GET['vm-gf'] ) ? sanitize_text_field( wp_unslash( $_GET['vm-gf'] ) ) : '';
+	$default_great_fors = explode( ',', $default_great_fors );
+
 	foreach ( $age_groups as $i => $group ) {
+		$checked = in_array($group, $default_great_fors, true ) ? ' checked' : '';
 		$menu .= sprintf(
 			'<div>
 				<label class="%1$s" for="great-for-%2$s">
-					<input id="great-for-%2$s" type="checkbox" name="volunteer_match_great_for[]" value="%2$s" title="%3$s"> %3$s
+					<input id="great-for-%2$s" type="checkbox" name="volunteer_match_great_for[]" value="%2$s" title="%3$s"%4$s> %3$s
 				</label>
 			</div>',
 			$check_class,
 			$group,
-			ucfirst( $group )
+			ucfirst( $group ),
+			$checked
 		);
 	}
 
