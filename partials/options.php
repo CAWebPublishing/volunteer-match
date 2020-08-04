@@ -14,6 +14,7 @@ if ( isset( $_POST['volunteer_match_submit'] ) ) {
 
 // Volunteer Match Options.
 $volunteer_match_api_key                    = get_option( 'volunteer_match_api_key', '' );
+$volunteer_match_endpoint_key                    = get_option( 'volunteer_match_endpoint_key', '' );
 
 $volunteer_match_opp_endpoint               = get_option( 'volunteer_match_opp_endpoint', '' );
 $volunteer_match_opp_endpoint_environment = get_option('volunteer_match_opp_endpoint_environment', 'staging');
