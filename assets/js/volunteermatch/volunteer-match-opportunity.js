@@ -8,12 +8,14 @@ jQuery(document).ready(function(){
 		// VolunteerMatch Shortcode Attributes
 		var forms_id = volunteer_match_opportunity.attr('data-target');
 		var show_notify = $('input[name="volunteer_match_opp_show_notify"]');
+		var volunteer_match_form_nonce = $('div#volunteer-match-opportunity input[name="volunteer_match_opportunity_nonce"]');
 
 		// Associated Form
 		var associated_form = {};
 
 		// Form Params
-		var zip, firstName, lastName, oppID, oppTitle, oppLocation, oppIsCovid19, parentOrgID, parentName, interests, categories = {};
+		var firstName, lastName, email, phoneNumber, zip, acceptTerms = {};
+		var oppID, oppTitle, oppLocation, oppIsCovid19, parentOrgID, parentName, interests, categories, container = {};
 
 		if( forms_id.length ){
 			associated_form = $( `#${forms_id}` );
@@ -21,6 +23,10 @@ jQuery(document).ready(function(){
 			firstName = associated_form.find('.firstName input');
 			lastName = associated_form.find('.lastName input');
 			zip = associated_form.find('.zip input');
+			email = associated_form.find('.email input');
+			phoneNumber = associated_form.find('.phoneNumber input');
+			zip = associated_form.find('.zip input');
+			acceptTerms = associated_form.find('.acceptTerms input');
 			oppID = associated_form.find('.oppID input');
 			oppTitle = associated_form.find('.title input');
 			oppLocation = associated_form.find('.location input');
@@ -39,42 +45,74 @@ jQuery(document).ready(function(){
 				$(submit_button).on('click', function(e){
 					associated_form.validate();
 
-					if( associated_form.valid() ){
+					if( associated_form.valid() && zip.length ){
 						e.preventDefault();
 
-						if( zip.length ){
-							// submit form
-							var fd = new FormData( associated_form.get( 0 ) );
-							fd.append( 'action', 'wpforms_submit' );
+						// create connection
+						var vmfd = new FormData();
+						vmfd.append( 'action', 'volunteer_match_create_connection' );
+						vmfd.append('firstName', firstName.val() );
+						vmfd.append('lastName', lastName.val() );
+						vmfd.append('email', email.val() );
+						vmfd.append('phoneNumber', phoneNumber.val() );
+						vmfd.append('zip', zip.val() );
+						vmfd.append('oppId', oppID.val() );
+						vmfd.append('volunteer_match_search_opportunities_nonce', volunteer_match_form_nonce.val() );
 
-							jQuery.ajax({
-								type: 'POST',
-								dataType: 'json',
-								url: volunteer_match_args.ajaxurl,
-								data: fd,
-								cache: false,
-								contentType: false,
-								processData: false,
-								success: function( submitted ){
-									if( show_notify.length && "true" == show_notify.val() ){
-										var f = firstName.length ? firstName.val() : '';
-										var l = lastName.length ? lastName.val() : '';
-										var n = f.length && l.length ? `${firstName.val()} ${lastName.val()}` : `${firstName.val()}${lastName.val()}`
-
-										n = n.length ? `, ${n} ` : ' ';
-
-										alert( `Thank you${n}for you interest in volunteering.`);
+						jQuery.ajax({
+							type: 'POST',
+							url: volunteer_match_args.ajaxurl,
+							data: vmfd,
+							cache: false,
+							contentType: false,
+							processData: false,
+							success: function( conn ){
+		
+								if( undefined === conn.error ){
+									// submit form
+									var fd = new FormData( associated_form.get( 0 ) );
+									fd.append( 'action', 'wpforms_submit' );
+		
+									jQuery.ajax({
+										type: 'POST',
+										dataType: 'json',
+										url: volunteer_match_args.ajaxurl,
+										data: fd,
+										cache: false,
+										contentType: false,
+										processData: false,
+										success: function( submitted ){
+											if( show_notify.length && "true" == show_notify.val() ){
+												var f = firstName.length ? firstName.val() : '';
+												var l = lastName.length ? lastName.val() : '';
+												var n = f.length && l.length ? `${firstName.val()} ${lastName.val()}` : `${firstName.val()}${lastName.val()}`
+		   
+												n = n.length ? `, ${n} ` : ' ';
+		   
+												alert( `Thank you${n}for you interest in volunteering.`);
+											}
+											associated_form.addClass('hidden');
+										}
+									 })
+								}else{
+									var error_msg = undefined !== conn.response ? conn.response : '';
+		
+									if( 400 === conn.error_code ){
+										alert(error_msg);
+									}else{
+										alert(`An error occurred while signing up for ${oppTitle.val()}, please try again later. Error Message: ${error_msg}`);
+										
 									}
-									associated_form.addClass('hidden');
+									
 								}
-							 })
-						}
+							}
+						 })
 						
 					}
 				});
 
 				zip.keypress( function(e){
-					volunteer_match_form.find('.was-validated').removeClass('was-validated');
+					associated_form.find('.was-validated').removeClass('was-validated');
 		
 					//if the input is not a digit don't type anything
 					if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
