@@ -477,8 +477,8 @@ function volunteer_match_radius_options( $attr ) {
  * @return string
  */
 function volunteer_match_opportunity_func( $attr ) {
-	$nonce = wp_create_nonce( 'volunteer_match_opportunity' );
-	$nonce = isset( $nonce ) && wp_verify_nonce( sanitize_key( $nonce ), 'volunteer_match_opportunity' );
+	$nonce = wp_create_nonce( 'volunteer_match_search_opportunities' );
+	$nonce = isset( $nonce ) && wp_verify_nonce( sanitize_key( $nonce ), 'volunteer_match_search_opportunities' ) ? $nonce : false;
 
 	$forms_id = isset( $attr['id'] ) ? sprintf( ' data-target="%1$s"', $attr['id'] ) : '';
 	$forms_id = empty( $id ) && isset( $attr['wpforms'] ) ? sprintf( ' data-target="wpforms-form-%1$s"', $attr['wpforms'] ) : '';
@@ -491,7 +491,7 @@ function volunteer_match_opportunity_func( $attr ) {
 
 	$display = ! empty( $opportunity ) ? volunteer_match_display_opportunity( $opportunity, $attr ) : '';
 
-	return wp_kses( sprintf( '<div id="volunteer-match-opportunity" class="row"%1$s>%2$s</div>', $forms_id, $display ), volunteer_match_allowed_html( array(), true ) );
+	return wp_kses( sprintf( '<div id="volunteer-match-opportunity" class="row"%1$s>%2$s<input name="volunteer_match_opportunity_nonce" type="hidden" value="%3$s"/></div>', $forms_id, $display, $nonce ), volunteer_match_allowed_html( array(), true ) );
 }
 
 /**
