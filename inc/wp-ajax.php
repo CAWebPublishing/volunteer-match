@@ -30,6 +30,9 @@ function volunteer_match_return_opportunities( $attr = array() ) {
 	}
 
 	$volunteer_match_opp_endpoint = get_option( 'volunteer_match_opp_endpoint', '' );
+	$volunteer_match_endpoint_key                    = get_option( 'volunteer_match_endpoint_key', '' );
+	$volunteer_match_endpoint_key = ! empty( $volunteer_match_endpoint_key )  ? "&key=$volunteer_match_endpoint_key" : '';
+
 	$volunteer_match_opp_endpoint_graphql = get_option('volunteer_match_opp_endpoint_graphql', false);
 	$volunteer_match_opp_endpoint_environment = get_option('volunteer_match_opp_endpoint_environment', 'staging');
 
@@ -58,6 +61,7 @@ function volunteer_match_return_opportunities( $attr = array() ) {
 		$categories = "";
 		$page = "";
 		$great_for = "";
+
 	// requesting all opportunities
 	}else{
 		// Get requested parameters
@@ -113,7 +117,7 @@ function volunteer_match_return_opportunities( $attr = array() ) {
 
 		$response = wp_remote_post( $volunteer_match_opp_endpoint, $post_args );
 	}else{
-		$volunteer_match_opp_endpoint .= "?$location$virtual$is_covid19$categories$keyword$radius$page$age_groups";
+		$volunteer_match_opp_endpoint .= "?$location$virtual$is_covid19$categories$keyword$radius$page$age_groups$volunteer_match_endpoint_key";
 		$response = wp_remote_get( $volunteer_match_opp_endpoint, $post_args );
 	}
 
@@ -170,6 +174,7 @@ function volunteer_match_create_connection() {
 	$phoneNumber              = isset( $_POST['phoneNumber'] ) ? sanitize_text_field( wp_unslash( $_POST['phoneNumber'] ) ) : '';
 	$zip                      = isset( $_POST['zip'] ) ? sanitize_text_field( wp_unslash( $_POST['zip'] ) ) : '';
 	$oppId                    = isset( $_POST['oppId'] ) ? sanitize_text_field( wp_unslash( $_POST['oppId'] ) ) : '';
+	$volunteer_match_endpoint_key                    = get_option( 'volunteer_match_endpoint_key', '' );
 	
 	$post_args['headers'] = array(
 		'Accept'  => 'application/json',
@@ -193,6 +198,10 @@ function volunteer_match_create_connection() {
 			'oppId' => $oppId,
 			'acceptTermsAndConditions' => 'true',
 		);
+
+		if( ! empty( $volunteer_match_endpoint_key ) ){
+			$post_args['body']['key'] = $volunteer_match_endpoint_key;
+		}
 	}
 	
 	// if no Opportunity EndPoint set, set to appropriate VolunteerMatch EndPoints

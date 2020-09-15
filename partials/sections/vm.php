@@ -5,6 +5,12 @@
 				<small class="form-text text-muted mt-0">For more information on How to Get an API Key, visit <a href="https://github.com/volunteermatch/vm-contrib/tree/master/graphql#getting-an-api-key" target="_blank">here</a>.</small>
 				<input type="text" class="form-control" id="volunteer_match_api_key" name="volunteer_match_api_key" value="<?php print esc_attr( $volunteer_match_api_key ); ?>">
 			</div>
+			<!-- EndPoint Key -->
+			<div class="form-group col-lg-7">
+				<strong><label for="volunteer_match_endpoint_key" class="mb-0">Endpoint Key</label></strong>
+				<small class="form-text text-muted mt-0">If endpoint is requires a key to allow access, enter key here.</small>
+				<input type="text" class="form-control" id="volunteer_match_endpoint_key" name="volunteer_match_endpoint_key" value="<?php print esc_attr( $volunteer_match_endpoint_key ); ?>">
+			</div>
 			<!-- VM Opportunities EndPoint -->
 			<div class="form-group col-lg-7">
 				<strong><label for="volunteer_match_opp_endpoint" class="mb-0">VolunteerMatch Opportunities Endpoint</label></strong>

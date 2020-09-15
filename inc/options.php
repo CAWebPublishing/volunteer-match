@@ -49,6 +49,7 @@ function volunteer_match_option_page() {
  */
 function volunteer_match_save_options( $values = array() ) {
 	update_option( 'volunteer_match_api_key', $values['volunteer_match_api_key'] );
+	update_option( 'volunteer_match_endpoint_key', $values['volunteer_match_endpoint_key'] );
 	update_option( 'volunteer_match_opp_endpoint', esc_url_raw( $values['volunteer_match_opp_endpoint'] ) );
 
 	$volunteer_match_opp_endpoint_graphql = isset( $values['volunteer_match_opp_endpoint_graphql'] ) ? true : false;
