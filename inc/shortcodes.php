@@ -220,7 +220,7 @@ function volunteer_match_search_options( $attr, $nonce ) {
 		</label>
 	</div>';
 	$col1    = sprintf(
-		'<div class="col" role="radiogroup" aria-label="Opportunity Types">
+		'<div class="col-4" role="radiogroup" aria-label="Opportunity Types">
 			<strong>Opportunity Type</strong>
 			%1$s%2$s
 		</div>',
@@ -237,25 +237,20 @@ function volunteer_match_search_options( $attr, $nonce ) {
 
 	$interests = volunteer_match_interest_menu( $attr );
 
-	$col2 = sprintf( '<div class="mx-4">%1$s%2$s</div>', $covid, $interests );
+	$col2 = sprintf( '<div class="col-2">%1$s%2$s</div>', $covid, $interests );
 
 	$radius    = volunteer_match_radius_options( $attr );
 	$great_for = volunteer_match_great_for_menu( $attr, $nonce );
 
-	$col3 = sprintf(
-		'
-	<div class="col">
-		<label>Radius %1$s miles</label>
-		<button id="volunteer-match-search" class="float-right btn btn-primary%2$s"%3$s>Search</button>
-		%4$s
-	</div>',
-		$radius,
+	$col3 = sprintf( '<div class="col-4"><label>Radius %1$s miles%2$s</label></div>', $radius, $great_for );
+
+	$col4 = sprintf(
+		'<div class="col-2"><button id="volunteer-match-search" class="float-right btn btn-primary%1$s"%2$s>Search</button></div>',
 		$button_size,
-		$button_style,
-		$great_for
+		$button_style
 	);
 
-	return sprintf( '<div class="form-row">%1$s%2$s%3$s</div>', $col1, $col2, $col3 );
+	return sprintf( '<div class="form-row">%1$s%2$s%3$s%4$s</div>', $col1, $col2, $col3, $col4 );
 
 }
 
@@ -409,7 +404,7 @@ function volunteer_match_great_for_menu( $attr, $nonce ) {
 		$button_size       = isset( $attr['button_size'] ) ? sprintf( ' btn-%1$s', $attr['button_size'] ) : ' btn-md';
 
 		return sprintf(
-			'<div class="dropdown" role="group" aria-label="Good For menu">
+			'<div class="dropdown pt-1" role="group" aria-label="Good For menu">
 				<button 
 					class="btn btn-primary dropdown-toggle%1$s" 
 					id="volunteer-match-great-for-button" 
@@ -428,7 +423,7 @@ function volunteer_match_great_for_menu( $attr, $nonce ) {
 
 	}
 
-	return sprintf( '<div><strong>Good For...</strong>%1$s</div>', $menu );
+	return sprintf( '<div class="pt-1"><strong>Good For...</strong>%1$s</div>', $menu );
 
 }
 
@@ -574,7 +569,7 @@ function volunteer_match_opportunity_hidden_fields( $opp, $attr ) {
 	$opp_title = sprintf( '<input type="hidden" name="volunteer_match_opp_title" value="%1$s">', $opp['title'] );
 
 	// is_covid.
-	$is_covid = ! empty( $opp['specialFlag'] ) && in_array( 'covid19', $opp['specialFlag'] ) ? 'true' : 'false';
+	$is_covid = ! empty( $opp['specialFlag'] ) && in_array( 'covid19', $opp['specialFlag'], true ) ? 'true' : 'false';
 	$is_covid = sprintf( '<input type="hidden" name="volunteer_match_opp_is_covid" value="%1$s">', $is_covid );
 
 	// parentOrgId.
@@ -616,7 +611,7 @@ function volunteer_match_opportunity_hidden_fields( $opp, $attr ) {
 			$title = $data['title'];
 
 			foreach ( $cats as $c => $cat ) {
-				if ( in_array( $cat, $categories ) ) {
+				if ( in_array( $cat, $categories, true ) ) {
 					$interests[] = $title;
 					break;
 				}
