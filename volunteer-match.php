@@ -4,7 +4,7 @@
  * Plugin URI: "https://github.com/Danny-Guzman/volunteer-match/"
  * Description: Adds a shortcode that display a VolunteerMatch.org search dashboard and opportunities results.
  * Author: Danny Guzman
- * Version: 1.1.6
+ * Version: 1.1.7
  * Author URI: "https://github.com/Danny-Guzman/"
  *
  * @package VolunteerMatch
