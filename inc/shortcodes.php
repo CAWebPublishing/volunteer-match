@@ -45,6 +45,7 @@ add_shortcode( 'volunteer_match_opportunity', 'volunteer_match_opportunity_func'
  *               $attr['title'] Whether or not to show opportunity title, default is true.
  *               $attr['mission'] Whether or not to show opportunity parent organization mission, default is true.
  *               $attr['parent_org'] Whether or not to show opportunity parent organization, default is true.
+ *               $attr['keywords'] Narrows opportunities search results by keywords.
  * @return string
  */
 function volunteer_match_func( $attr ) {
@@ -56,7 +57,7 @@ function volunteer_match_func( $attr ) {
 	$classes = " class=\"container p-0$hidden\"";
 	$styles  = ! empty( $font_family ) ? " style=\"$font_family\"" : '';
 
-	$search_row = volunteer_match_search_row( $attr );
+	$search_row = volunteer_match_search_row( $attr, $nonce );
 
 	$search_options = volunteer_match_search_options( $attr, $nonce );
 
@@ -170,10 +171,19 @@ function volunteer_match_extra_inputs( $attr, $nonce ) {
 /**
  * Adds Location and Keyword inputs to VolunteerMatch Search Form
  *
- * @param  array $attr Attributes for the shortcode.
+ * @param  array  $attr Attributes for the shortcode.
+ *               $attr['keywords'] Narrows opportunities search results by keywords.
+ * @param  string $nonce Form nonce value.
  * @return string
  */
-function volunteer_match_search_row( $attr ) {
+function volunteer_match_search_row( $attr, $nonce ) {
+	$verified = wp_verify_nonce( $nonce, 'volunteer_match_search_opportunities' );
+
+	$k = isset( $attr['keywords'] ) && ! empty( $attr['keywords'] ) ? $attr['keywords'] : '';
+	$k = isset( $_GET['vm_keywords'] ) && ! empty( $_GET['vm_keywords'] ) ? sanitize_text_field( wp_unslash( $_GET['vm_keywords'] ) ) : $k;
+
+	$k = ! empty( $k ) ? sprintf( ' value="%1$s"', rawurlencode( trim( $k ) ) ) : '';
+
 	$location = '
 	<div class="form-group col-6">
 		<label for="volunteer_match_location">
@@ -182,11 +192,15 @@ function volunteer_match_search_row( $attr ) {
 		<input id="volunteer_match_location" type="text" name="volunteer_match_location" class="form-control" required>
 	</div>';
 
-	$keyword = '
-	<div class="form-group col-6">
+	$keyword = sprintf(
+		'
+	<div class="form-group col-6%1$s">
 		<label for="volunteer_match_keyword">Narrow your search</label>
-		<input id="volunteer_match_keyword" type="text" name="volunteer_match_keyword" placeholder="Keyword" class="form-control">
-	</div>';
+		<input id="volunteer_match_keyword" type="text" name="volunteer_match_keyword" placeholder="Keyword" class="form-control"%2$s>
+	</div>',
+		! empty( $k ) ? ' hidden' : '',
+		$k
+	);
 
 	return sprintf( '<div class="form-row">%1$s%2$s</div>', $location, $keyword );
 }
