@@ -209,6 +209,7 @@ function volunteer_match_search_row( $attr, $nonce ) {
  * Adds VolunteerMatch Search Options
  *
  * @param  array  $attr Attributes for the shortcode.
+ *                $attr['covid'] Covid checkbox, whether checked or hidden. Values are 'true', 'false', 'none'.
  *                $attr['button_color'] Button background color.
  *                $attr['button_size'] Button size, default md. Options sm, md, lg.
  *                $attr['button_font_color'] Button text color.
@@ -220,6 +221,8 @@ function volunteer_match_search_options( $attr, $nonce ) {
 	$button_font_color = isset( $attr['button_font_color'] ) ? sprintf( ' color:%2$s;', $attr['button_font_color'] ) : '';
 	$button_style      = ! empty( $button_color ) || ! empty( $button_font_color ) ? sprintf( ' style="%1$s%2$s"', $button_color, $button_font_color ) : '';
 	$button_size       = isset( $attr['button_size'] ) ? sprintf( ' btn-%1$s', $attr['button_size'] ) : ' btn-md';
+	$covid             = ! isset( $attr['covid'] ) || 'true' === $attr['covid'] ? ' checked' : '';
+	$covid_hidden      = isset( $attr['covid'] ) && 'none' === $attr['covid'] ? ' hidden' : '';
 
 	$local   = '
 	<div class="form-check pl-0">
@@ -242,12 +245,16 @@ function volunteer_match_search_options( $attr, $nonce ) {
 		$virtual
 	);
 
-	$covid = '
-	<div class="form-check pl-0">
+	$covid = sprintf(
+		'
+	<div class="form-check pl-0%1$s">
 		<label for="volunteer_match_covid19">COVID-19 Related 
-			<input id="volunteer_match_covid19" type="checkbox" name="volunteer_match_covid19" checked>
+			<input id="volunteer_match_covid19" type="checkbox" name="volunteer_match_covid19"%2$s>
 		</label>
-	</div>';
+	</div>',
+		$covid_hidden,
+		$covid
+	);
 
 	$interests = volunteer_match_interest_menu( $attr );
 
@@ -311,6 +318,7 @@ function volunteer_match_search_results( $attr ) {
  *               $attr['interests'] Whether the interests should be compacted or full, default is compact.
  *               $attr['interests'] = compact, shows a button with a menu of interests.
  *               $attr['interests'] = full, shows all interest on front display.
+ *               $attr['interests'] = none, hide interests on front display.
  *               $attr['button_color'] Button background color.
  *               $attr['button_font_color'] Button text color.
  *               $attr['button_size'] Button size, default md. Options sm, md, lg.
@@ -318,7 +326,9 @@ function volunteer_match_search_results( $attr ) {
  * @return string
  */
 function volunteer_match_interest_menu( $attr ) {
-	$compact   = isset( $attr['interests'] ) && 'full' === $attr['interests'] ? false : true;
+	$compact = isset( $attr['interests'] ) && 'full' === $attr['interests'] ? false : true;
+	$hidden  = ! isset( $attr['interests'] ) || 'none' === $attr['interests'] ? ' hidden' : '';
+
 	$interests = get_option( 'volunteer_match_interests', array() );
 
 	$menu = '';
@@ -346,18 +356,19 @@ function volunteer_match_interest_menu( $attr ) {
 		$button_size       = isset( $attr['button_size'] ) ? sprintf( ' btn-%1$s', $attr['button_size'] ) : ' btn-md';
 
 		return sprintf(
-			'<div class="dropdown" role="group" aria-label="Interested in menu">
+			'<div class="dropdown%1$s" role="group" aria-label="Interested in menu">
 				<button 
-					class="btn btn-primary dropdown-toggle%1$s" 
+					class="btn btn-primary dropdown-toggle%2$s" 
 					id="volunteer-match-interest-button" 
 					data-toggle="dropdown" 
 					aria-haspopup="true" 
-					aria-expanded="false"%2$s>I am interested in...
+					aria-expanded="false"%3$s>I am interested in...
 				</button>
 				<div class="dropdown-menu" aria-labelledby="volunteer-match-interest-button">
-				%3$s
+				%4$s
 				</div>
 			</div>',
+			$hidden,
 			$button_size,
 			$button_style,
 			$menu
@@ -365,7 +376,7 @@ function volunteer_match_interest_menu( $attr ) {
 
 	}
 
-	return sprintf( '<div><strong>I am interested in...</strong>%1$s</div>', $menu );
+	return sprintf( '<div%1$s><strong>I am interested in...</strong>%2$s</div>', $menu, ! empty( $hidden ) ? sprintf( ' class="%1$s"', $hidden ) : '' );
 
 }
 
