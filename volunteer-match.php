@@ -4,7 +4,7 @@
  * Plugin URI: "https://github.com/Danny-Guzman/volunteer-match/"
  * Description: Adds a shortcode that display a VolunteerMatch.org search dashboard and opportunities results.
  * Author: Danny Guzman
- * Version: 1.1.7
+ * Version: 1.1.8
  * Author URI: "https://github.com/Danny-Guzman/"
  *
  * @package VolunteerMatch
@@ -58,7 +58,7 @@ function volunteer_match_admin_init() {
 function volunteer_match_wp_enqueue_scripts() {
 	$version      = get_plugin_data( __FILE__ )['Version'];
 	$frontend_css = volunteer_match_get_min_file( 'css/frontend.css' );
-	$frontend_js  = volunteer_match_get_min_file( 'js/frontend.js' );
+	$frontend_js  = volunteer_match_get_min_file( 'js/frontend.js', 'js' );
 
 	$volunteer_match_bootstrap_support = get_option('volunteer_match_bootstrap_support', false) ? ' checked' : '';
 
@@ -68,7 +68,7 @@ function volunteer_match_wp_enqueue_scripts() {
 	wp_localize_script( 'volunteer-match-core-script', 'volunteer_match_args', array( 'ajaxurl' => admin_url( 'admin-ajax.php' ) ) );
 
 	if( $volunteer_match_bootstrap_support ){
-		$bootstrap_js  = volunteer_match_get_min_file( 'js/bootstrap.js' );
+		$bootstrap_js  = volunteer_match_get_min_file( 'js/bootstrap.js', 'js' );
 		wp_register_script( 'volunteer-match-bootstrap-script', $bootstrap_js, array(), $version, true );
 		wp_enqueue_script( 'volunteer-match-bootstrap-script' );
 	}

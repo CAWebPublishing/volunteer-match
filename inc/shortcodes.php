@@ -376,7 +376,7 @@ function volunteer_match_interest_menu( $attr ) {
 
 	}
 
-	return sprintf( '<div%1$s><strong>I am interested in...</strong>%2$s</div>', $menu, ! empty( $hidden ) ? sprintf( ' class="%1$s"', $hidden ) : '' );
+	return sprintf( '<div%1$s><strong>I am interested in...</strong>%2$s</div>', ! empty( $hidden ) ? sprintf( ' class="%1$s"', $hidden ) : '' , $menu );
 
 }
 
